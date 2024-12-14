@@ -4,23 +4,92 @@ import Seance from "../pages/Seance";
 import Profile from "../pages/Profile";
 import colors from "../constants/colors";
 
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
+
+import { icons } from "./../assets/icons/icons";
 
 const Tab = createBottomTabNavigator();
 
+const TabIcon = ({ icon: Icon, color }) => {
+  return (
+    <View>
+      <Icon width={28} height={28} color={color} />
+    </View>
+  );
+};
+
 const HomeTabs = () => {
   return (
-    <Tab.Navigator style={styles.container}>
-      <Tab.Screen name="Accueil" component={Accueil} />
-      <Tab.Screen name="Seance" component={Seance} />
-      <Tab.Screen name="Profile" component={Profile} />
+    <Tab.Navigator
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: colors.background,
+          elevation: 0, // Pour Android
+          shadowOpacity: 0, // Pour iOS
+          borderTopWidth: 0,
+        },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.placeholder,
+        headerShown: false,
+        tabBarShowLabel: false,
+      }}
+    >
+      <Tab.Screen
+        name="Accueil"
+        component={Accueil}
+        options={{
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              icon={icons.Home}
+              color={color}
+              name="Profile"
+              focused={focused}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Seance"
+        component={Seance}
+        options={{
+          title: "Séance",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              icon={icons.Dumbell}
+              color={color}
+              name="Seance"
+              focused={focused}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          title: "Profile",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              icon={icons.User}
+              color={color}
+              name="Profile"
+              focused={focused}
+            />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
+    color: "red",
+  },
+  icon: {
+    color: "red",
   },
 });
 export default HomeTabs;
