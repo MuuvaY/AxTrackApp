@@ -2,21 +2,24 @@ import { View, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import HomeTabs from "./navigation/HomeTabs";
 import { NavigationContainer } from "@react-navigation/native";
+import colors from "./constants/colors";
 
-export default function App() {
+const App = () => {
   return (
-    <NavigationContainer>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <StatusBar style="auto" />
+      <NavigationContainer>
         <HomeTabs />
-        <StatusBar style="auto" />
-      </View>
-    </NavigationContainer>
+      </NavigationContainer>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "skyblue", // Choisir la couleur que tu veux ici
+    backgroundColor: colors.background,
   },
 });
+
+export default App;
