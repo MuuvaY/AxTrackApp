@@ -2,10 +2,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Accueil from "../pages/Accueil";
 import Seance from "../pages/Seance";
 import Profile from "../pages/Profile";
-import colors from "../constants/colors";
 
 import { StyleSheet, View, Image } from "react-native";
-
+import { useTheme } from "../components/ThemeContext";
 import { icons } from "./../assets/icons/icons";
 
 const Tab = createBottomTabNavigator();
@@ -19,13 +18,15 @@ const TabIcon = ({ icon: Icon, color }) => {
 };
 
 const HomeTabs = () => {
+  const theme = useTheme();
+  const { colors } = theme;
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
           backgroundColor: colors.background,
-          elevation: 0, // Pour Android
-          shadowOpacity: 0, // Pour iOS
+          elevation: 0,
+          shadowOpacity: 0,
           borderTopWidth: 0,
         },
         tabBarActiveTintColor: colors.primary,
@@ -84,12 +85,4 @@ const HomeTabs = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    color: "red",
-  },
-  icon: {
-    color: "red",
-  },
-});
 export default HomeTabs;
