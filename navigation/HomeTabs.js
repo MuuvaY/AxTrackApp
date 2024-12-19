@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Accueil from "../pages/Accueil";
 import Seance from "../pages/Seance";
 import Profile from "../pages/Profile";
+import Test from "../pages/TestTokenScreen";
 
 import { StyleSheet, View, Image } from "react-native";
 import { useTheme } from "../components/ThemeContext";
@@ -76,6 +77,23 @@ const HomeTabs = () => {
               icon={icons.User}
               color={color}
               name="Profile"
+              focused={focused}
+            />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Test"
+        component={Test}
+        options={{
+          title: "Test",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              icon={icons.User}
+              color={color}
+              name="Test"
               focused={focused}
             />
           ),
