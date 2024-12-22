@@ -52,7 +52,7 @@
 
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, SafeAreaView } from "react-native";
-import { useTheme } from "../components/ThemeContext";
+import { useTheme } from "../context/ThemeContext";
 import ApiManager from "../api/ApiManager";
 
 const Accueil = () => {

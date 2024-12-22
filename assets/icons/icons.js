@@ -1,5 +1,5 @@
 import * as React from "react";
-import Svg, { Path, Circle } from "react-native-svg";
+import Svg, { Path, Circle, Rect } from "react-native-svg";
 
 function Home(props) {
   return (
@@ -65,8 +65,116 @@ function User(props) {
   );
 }
 
+function Mail(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <Rect width="20" height="16" x="2" y="4" rx="2" />
+      <Path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    </Svg>
+  );
+}
+
+function Lock(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <Circle cx="12" cy="16" r="1" />
+      <Rect x="3" y="10" width="18" height="12" rx="2" />
+      <Path d="M7 10V7a5 5 0 0 1 10 0v3" />
+    </Svg>
+  );
+}
+
+function UserRound(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <Circle cx="12" cy="8" r="5" />
+      <Path d="M20 21a8 8 0 0 0-16 0" />
+    </Svg>
+  );
+}
+
+function Weight(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <Circle cx="12" cy="5" r="3" />
+      <Path d="M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z" />
+    </Svg>
+  );
+}
+
+function Time(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <Path d="M5 22h14" />
+      <Path d="M5 2h14" />
+      <Path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" />
+      <Path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2" />
+    </Svg>
+  );
+}
+
 export const icons = {
   Home,
   Dumbell,
   User,
+  Mail,
+  Lock,
+  UserRound,
+  Weight,
+  Time,
 };

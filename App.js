@@ -33,14 +33,16 @@ import { Text } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { ThemeProvider } from "./components/ThemeContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { useFonts } from "expo-font";
 import { setupInterceptor } from "./api/ApiManager";
 import TestTokenScreen from "./pages/TestTokenScreen";
 
 import HomeTabs from "./navigation/HomeTabs";
+import Profile from "./pages/Profile";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 const Stack = createStackNavigator();
 
@@ -61,11 +63,23 @@ const NavigationContent = () => {
             component={HomeTabs}
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="TestToken" component={TestTokenScreen} />
         </>
       ) : (
         // Routes non authentifiées
-        <Stack.Screen name="Login" component={Login} />
+        <>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Register"
+            component={Register}
+            options={{ headerShown: false }}
+          />
+        </>
       )}
     </Stack.Navigator>
   );

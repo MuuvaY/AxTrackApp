@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, SafeAreaView } from "react-native";
-import { useTheme } from "../components/ThemeContext";
+import { useTheme } from "../context/ThemeContext";
 
 const Seance = () => {
   const theme = useTheme();

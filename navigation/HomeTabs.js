@@ -5,7 +5,7 @@ import Profile from "../pages/Profile";
 import Test from "../pages/TestTokenScreen";
 
 import { StyleSheet, View, Image } from "react-native";
-import { useTheme } from "../components/ThemeContext";
+import { useTheme } from "../context/ThemeContext";
 import { icons } from "./../assets/icons/icons";
 
 const Tab = createBottomTabNavigator();
