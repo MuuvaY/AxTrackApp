@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
+import { storeToken, retrieveToken, removeToken } from "../utils/secureStore";
 
 const AuthContext = createContext(null);
 
@@ -13,7 +14,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
-      const token = await SecureStore.getItemAsync("authToken");
+      const token = await retrieveToken();
       console.log("Token vérifié au démarrage:", token);
       setIsAuthenticated(!!token);
     } catch (error) {
@@ -26,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const signIn = async (token) => {
     try {
-      await SecureStore.setItemAsync("authToken", token);
+      await storeToken(token);
       setIsAuthenticated(true);
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);
@@ -35,7 +36,7 @@ export const AuthProvider = ({ children }) => {
 
   const signOut = async () => {
     try {
-      await SecureStore.deleteItemAsync("authToken");
+      await removeToken();
       setIsAuthenticated(false);
     } catch (error) {
       console.error("Erreur lors de la déconnexion:", error);

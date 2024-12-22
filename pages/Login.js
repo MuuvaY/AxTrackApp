@@ -19,6 +19,7 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [focusedInput, setFocusedInput] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const { signIn } = useAuth();
   const theme = useTheme();
   const { colors, fonts } = theme;
@@ -41,6 +42,9 @@ export default function LoginScreen({ navigation }) {
     navigation.navigate("Register");
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Inverse l'état showPassword
+  };
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -57,23 +61,23 @@ export default function LoginScreen({ navigation }) {
     },
     input: {
       backgroundColor: colors.secondBackground,
-      padding: 10,
-      marginBottom: 10,
+      marginBottom: 15,
       borderRadius: 5,
       height: 50,
       fontSize: 30,
       color: colors.text,
       letterSpacing: 2,
       fontFamily: fonts.medium,
-      textAlignVertical: "center",
-      lineHeight: 35,
+      // textAlignVertical: "center",
+      lineHeight: 31,
       paddingLeft: 45,
+      borderWidth: 2, //
+      borderColor: "transparent",
+      paddingVertical: 0,
     },
+
     inputFocused: {
       borderColor: colors.secondary,
-      borderWidth: 2,
-      paddingHorizontal: 8,
-      paddingVertical: 8,
     },
     button: {
       backgroundColor: colors.secondary,
@@ -81,6 +85,7 @@ export default function LoginScreen({ navigation }) {
       paddingHorizontal: 20,
       borderRadius: 5,
       height: 54,
+      marginTop: 50,
     },
     buttonText: {
       color: colors.text,
@@ -116,6 +121,13 @@ export default function LoginScreen({ navigation }) {
       marginLeft: 5,
       letterSpacing: 1,
     },
+
+    eyeIcon: {
+      position: "absolute", // Positionner l'icône à l'intérieur de l'input
+      right: 10, // L'icône sera à 10px du bord droit de l'input
+      top: 25, // Centrer l'icône verticalement
+      transform: [{ translateY: -12 }], // Ajuster pour centrer précisément
+    },
   });
 
   return (
@@ -142,6 +154,7 @@ export default function LoginScreen({ navigation }) {
             onBlur={() => setFocusedInput(null)}
             keyboardAppearance="dark"
             selectionColor={colors.secondary}
+            autoCapitalize="none"
           />
         </View>
         <View style={styles.inputContainer}>
@@ -158,7 +171,7 @@ export default function LoginScreen({ navigation }) {
             ]}
             placeholder="Mot de passe"
             placeholderTextColor={colors.placeholder}
-            secureTextEntry
+            secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
             onFocus={() => setFocusedInput("password")}
@@ -166,6 +179,12 @@ export default function LoginScreen({ navigation }) {
             keyboardAppearance="dark"
             selectionColor={colors.secondary}
           />
+          <TouchableOpacity
+            onPress={togglePasswordVisibility}
+            style={styles.eyeIcon}
+          >
+            <icons.EyeOff width={24} height={24} color={colors.placeholder} />
+          </TouchableOpacity>
         </View>
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Se connecter</Text>

@@ -1,10 +1,8 @@
-import axios from "axios";
-import ApiManager from "../apiManager";
-const BASE_URL = "http://localhost:3000";
+import ApiManager from "../ApiManager";
 
 export const loginUser = async (username, password) => {
   try {
-    const response = await axios.post(`${BASE_URL}/login`, {
+    const response = await ApiManager.post("/login", {
       username,
       password,
     });

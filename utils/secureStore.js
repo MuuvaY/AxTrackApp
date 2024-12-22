@@ -2,7 +2,7 @@ import * as SecureStore from "expo-secure-store";
 
 export const storeToken = async (token) => {
   try {
-    await SecureStore.setItemAsync("userToken", token);
+    await SecureStore.setItemAsync("authToken", token);
     console.log("Token stocké avec succès !");
   } catch (error) {
     console.error("Erreur lors du stockage du token :", error);
@@ -11,7 +11,7 @@ export const storeToken = async (token) => {
 
 export const retrieveToken = async () => {
   try {
-    const token = await SecureStore.getItemAsync("userToken");
+    const token = await SecureStore.getItemAsync("authToken");
     if (token) {
       console.log("Token récupéré avec succès !", token);
     } else {
@@ -26,7 +26,7 @@ export const retrieveToken = async () => {
 
 export const removeToken = async () => {
   try {
-    await SecureStore.deleteItemAsync("userToken");
+    await SecureStore.deleteItemAsync("authToken");
     console.log("Token supprimé avec succès !");
   } catch (error) {
     console.error("Erreur lors de la suppression du token :", error);
