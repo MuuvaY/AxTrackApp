@@ -6,10 +6,11 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "../context/ThemeContext";
-import { icons } from "./../assets/icons/icons";
+import { icons } from "./../assets/icons/icons"; // Assurez-vous que l'icône MoreVert est exportée ici
 
 const Exercice = () => {
   const theme = useTheme();
@@ -17,6 +18,29 @@ const Exercice = () => {
   const navigation = useNavigation();
 
   const elements = []; // Remplacer par les données pertinentes
+
+  const handleMenuPress = () => {
+    Alert.alert(
+      "Options",
+      "Que voulez-vous faire ?",
+      [
+        {
+          text: "Modifier",
+          onPress: () => console.log("Modifier"),
+        },
+        {
+          text: "Supprimer",
+          onPress: () => console.log("Supprimer"),
+          style: "destructive",
+        },
+        {
+          text: "Annuler",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -31,6 +55,10 @@ const Exercice = () => {
       top: 30,
       letterSpacing: 2,
     },
+    titleContainer: {
+      backgroundColor: colors.background,
+      width: "100%",
+    },
     noSeanceContainer: {
       alignItems: "center",
       justifyContent: "center",
@@ -42,13 +70,28 @@ const Exercice = () => {
       margin: 20,
       textAlign: "center",
     },
+    menuIcon: {
+      position: "absolute", // Positionnement de l'icône en haut à droite
+      top: 10,
+      right: 10,
+      zIndex: 1, // S'assurer que l'icône reste devant d'autres éléments
+    },
   });
 
   return (
     <View style={styles.container}>
       <SafeAreaView>
-        <Text style={styles.title}>Exercice</Text>
+        {/* Titre (optionnel) */}
+        {/* <View style={styles.titleContainer}>
+          <Text style={styles.title}>{seanceNom}</Text>
+        </View> */}
 
+        {/* Icône des trois petits points en haut à droite */}
+        <TouchableOpacity style={styles.menuIcon} onPress={handleMenuPress}>
+          <icons.Tag width={30} height={30} color={colors.primary} />
+        </TouchableOpacity>
+
+        {/* Contenu principal */}
         {elements.length > 0 ? (
           <Text>Il y a des éléments à afficher.</Text>
         ) : (

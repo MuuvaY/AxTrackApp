@@ -82,23 +82,6 @@ const HomeTabs = () => {
           ),
         }}
       />
-
-      <Tab.Screen
-        name="Test"
-        component={Test}
-        options={{
-          title: "Test",
-          headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon
-              icon={icons.User}
-              color={color}
-              name="Test"
-              focused={focused}
-            />
-          ),
-        }}
-      />
     </Tab.Navigator>
   );
 };

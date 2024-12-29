@@ -19,19 +19,34 @@ const Seance = () => {
   const navigation = useNavigation();
 
   const [seances, setSeances] = useState([]);
-  // const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchSeances = async () => {
       try {
         const data = await getSeances();
-        setSeances(data); // Mise à jour du state avec les séances
+        setSeances(data);
       } catch (err) {
         setError("Impossible de récupérer les séances.");
       }
     };
     fetchSeances();
   }, []);
+
+  const addSeance = (newSeance) => {
+    setSeances((prevSeances) => [...prevSeances, newSeance]);
+  };
+
+  const handleDeleteSeance = async (seanceId) => {
+    try {
+      await deleteSeance(seanceId);
+      setSeances((prevSeances) =>
+        prevSeances.filter((seance) => seance.id !== seanceId)
+      );
+      Alert.alert("Succès", "La séance a été supprimée.");
+    } catch (error) {
+      Alert.alert("Erreur", "Impossible de supprimer la séance.");
+    }
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -45,10 +60,15 @@ const Seance = () => {
       left: 30,
       top: 30,
       letterSpacing: 2,
-      zIndex: 1000,
+      // zIndex: 1000,
+    },
+    titleContainer: {
+      backgroundColor: colors.background,
+      width: "100%",
+      height: 100,
     },
     seanceContainer: {
-      marginTop: 100,
+      // marginTop: 100,
       alignItems: "center", // Centre l'élément dans le container
       justifyContent: "center", // Centre l'élément verticalement
     },
@@ -98,7 +118,6 @@ const Seance = () => {
       color: colors.background,
       fontFamily: fonts.black,
       fontSize: 64,
-      lineHeight: 80,
       textAlign: "center",
       textAlignVertical: "center",
     },
@@ -107,23 +126,23 @@ const Seance = () => {
   return (
     <View style={styles.container}>
       <SafeAreaView>
-        <Text style={styles.title}>Séance</Text>
-
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Séance</Text>
+        </View>
         <ScrollView
           contentContainerStyle={[
             styles.seanceContainer,
-            { paddingBottom: 100 }, // Laisse de l'espace pour le bouton
+            { paddingBottom: 100 },
           ]}
         >
-          {" "}
           {seances.length > 0 ? (
             seances.map((seance, index) => (
-              <View key={index} style={styles.exerciceContainer}>
+              <View key={seance.id || index} style={styles.exerciceContainer}>
                 <TouchableOpacity
                   onPress={() => navigation.navigate("Exercice")}
                 >
                   <View style={styles.exerciceRow}>
-                    <Text style={styles.exercice}> {seance.seance_nom}</Text>
+                    <Text style={styles.exercice}>{seance.seance_nom}</Text>
                     <icons.ChevronRight
                       width={44}
                       height={44}
@@ -135,7 +154,6 @@ const Seance = () => {
             ))
           ) : (
             <View style={styles.noSeanceContainer}>
-              {/* Si aucun nom de séance n'existe, afficher une icône par défaut */}
               <icons.DumbellCross
                 width={100}
                 height={100}
@@ -150,7 +168,9 @@ const Seance = () => {
           )}
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={() => navigation.navigate("CreationSeance")}
+            onPress={() =>
+              navigation.navigate("CreationSeance", { addSeance: addSeance })
+            }
           >
             <icons.Plus
               width={30}

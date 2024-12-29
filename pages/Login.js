@@ -63,19 +63,14 @@ export default function LoginScreen({ navigation }) {
       backgroundColor: colors.secondBackground,
       marginBottom: 15,
       borderRadius: 5,
-      // height: 50,
+      height: 50,
       fontSize: 28,
       color: colors.text,
       letterSpacing: 2,
       fontFamily: fonts.medium,
-      // textAlignVertical: "center",
-      lineHeight: 31,
       paddingLeft: 45,
-      borderWidth: 2, //
+      borderWidth: 2,
       borderColor: "transparent",
-      paddingVertical: 0,
-      includeFontPadding: false,
-      paddingVertical: 10,
     },
 
     inputFocused: {
@@ -83,18 +78,17 @@ export default function LoginScreen({ navigation }) {
     },
     button: {
       backgroundColor: colors.secondary,
-      paddingVertical: 12,
-      paddingHorizontal: 20,
       borderRadius: 5,
       height: 54,
       marginTop: 50,
+      justifyContent: "center",
+      alignItems: "center",
     },
     buttonText: {
       color: colors.text,
       letterSpacing: 2,
       fontFamily: fonts.medium,
       fontSize: 32,
-      textAlign: "center",
     },
     icon: {
       position: "absolute",
@@ -103,10 +97,10 @@ export default function LoginScreen({ navigation }) {
       zIndex: 1000,
     },
     linkContainer: {
-      flexDirection: "row", // Aligner horizontalement
-      justifyContent: "center", // Centrer les éléments
+      flexDirection: "row",
+      justifyContent: "center",
       position: "absolute",
-      bottom: 40, // Le texte sera à 20px du bas de l'écran
+      bottom: 40,
       left: 0,
       right: 0,
     },
@@ -125,10 +119,10 @@ export default function LoginScreen({ navigation }) {
     },
 
     eyeIcon: {
-      position: "absolute", // Positionner l'icône à l'intérieur de l'input
-      right: 10, // L'icône sera à 10px du bord droit de l'input
-      top: 25, // Centrer l'icône verticalement
-      transform: [{ translateY: -12 }], // Ajuster pour centrer précisément
+      position: "absolute",
+      right: 10,
+      top: 25,
+      transform: [{ translateY: -12 }],
     },
   });
 

@@ -72,7 +72,7 @@ const Accueil = () => {
       backgroundColor: colors.secondBackground,
       color: colors.text,
       height: 50,
-      // fontFamily: fonts.medium, // Remplace par la bonne police si nécessaire
+      fontFamily: fonts.medium, // Remplace par la bonne police si nécessaire
       fontSize: 28,
       borderRadius: 5,
       paddingLeft: 20,

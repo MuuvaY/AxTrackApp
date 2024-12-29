@@ -35,3 +35,13 @@ export const createSeance = async (
     throw error;
   }
 };
+
+export const deleteSeance = async (seanceId) => {
+  try {
+    const response = await ApiManager.delete(`/seances/${seanceId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la suppression de la séance:", error);
+    throw error;
+  }
+};

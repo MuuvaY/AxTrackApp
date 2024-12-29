@@ -7,16 +7,12 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert,
 } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigation } from "@react-navigation/native";
 import { icons } from "./../assets/icons/icons";
 
-import ApiManager from "../api/ApiManager";
-import { registerUser } from "../api/User/register";
-
-const RegisterScreen = () => {
+const Register = () => {
   const theme = useTheme();
   const { colors, fonts } = theme;
   const navigation = useNavigation();
@@ -83,62 +79,51 @@ const RegisterScreen = () => {
       textAlign: "center",
     },
     inputContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-    },
-    inputWrapperName: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: colors.secondBackground,
-      borderRadius: 5,
-      height: 50,
       marginBottom: 15,
-      paddingLeft: 10,
-      width: "48%",
-      borderWidth: 2, // Ajoutez ceci
-      borderColor: "transparent", // Et ceci
-    },
-    inputWrapper: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: colors.secondBackground,
-      borderRadius: 5,
-      height: 50,
-      marginBottom: 15,
-      paddingLeft: 10,
-      borderWidth: 2, // Ajoutez ceci
-      borderColor: "transparent", // Et ceci
+      position: "relative",
     },
     input: {
-      flex: 1,
-      padding: 10,
-      fontSize: 30,
+      backgroundColor: colors.secondBackground,
+      borderRadius: 5,
+      height: 50,
+      fontSize: 28,
       color: colors.text,
       letterSpacing: 2,
       fontFamily: fonts.medium,
-      textAlignVertical: "center",
-      lineHeight: 35,
+      paddingLeft: 45,
+      borderWidth: 2,
+      borderColor: "transparent",
     },
     inputFocused: {
       borderColor: colors.secondary,
     },
     icon: {
-      marginRight: 10,
+      position: "absolute",
+      left: 10,
+      top: 13,
+      zIndex: 1000,
+    },
+    halfInputContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      // marginBottom: -15, // Pour compenser le marginBottom des inputContainer
+    },
+    halfInput: {
+      width: "48%",
     },
     button: {
       backgroundColor: colors.secondary,
-      paddingVertical: 12,
-      paddingHorizontal: 20,
       borderRadius: 5,
-      marginTop: 50,
       height: 54,
+      marginTop: 50,
+      justifyContent: "center",
+      alignItems: "center",
     },
     buttonText: {
       color: colors.text,
       letterSpacing: 2,
       fontFamily: fonts.medium,
       fontSize: 32,
-      textAlign: "center",
     },
     message: {
       marginTop: 20,
@@ -161,7 +146,6 @@ const RegisterScreen = () => {
       right: 0,
     },
     footerText: {
-      textAlign: "center",
       color: colors.text,
       fontSize: 22,
       marginTop: 20,
@@ -182,13 +166,9 @@ const RegisterScreen = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <Text style={styles.title}>S'inscrire</Text>
-        <View style={styles.inputContainer}>
-          <View
-            style={[
-              styles.inputWrapperName,
-              focusedInput === "nom" && styles.inputFocused,
-            ]}
-          >
+
+        <View style={styles.halfInputContainer}>
+          <View style={[styles.inputContainer, styles.halfInput]}>
             <icons.UserRound
               width={24}
               height={24}
@@ -196,7 +176,10 @@ const RegisterScreen = () => {
               style={styles.icon}
             />
             <TextInput
-              style={styles.input}
+              style={[
+                styles.input,
+                focusedInput === "nom" && styles.inputFocused,
+              ]}
               placeholder="Nom"
               placeholderTextColor={colors.placeholder}
               onFocus={() => setFocusedInput("nom")}
@@ -207,12 +190,8 @@ const RegisterScreen = () => {
               onChangeText={setNom}
             />
           </View>
-          <View
-            style={[
-              styles.inputWrapperName,
-              focusedInput === "prenom" && styles.inputFocused,
-            ]}
-          >
+
+          <View style={[styles.inputContainer, styles.halfInput]}>
             <icons.UserRound
               width={24}
               height={24}
@@ -220,7 +199,10 @@ const RegisterScreen = () => {
               style={styles.icon}
             />
             <TextInput
-              style={styles.input}
+              style={[
+                styles.input,
+                focusedInput === "prenom" && styles.inputFocused,
+              ]}
               placeholder="Prénom"
               placeholderTextColor={colors.placeholder}
               onFocus={() => setFocusedInput("prenom")}
@@ -232,12 +214,8 @@ const RegisterScreen = () => {
             />
           </View>
         </View>
-        <View
-          style={[
-            styles.inputWrapper,
-            focusedInput === "mail" && styles.inputFocused,
-          ]}
-        >
+
+        <View style={styles.inputContainer}>
           <icons.Mail
             width={24}
             height={24}
@@ -245,7 +223,10 @@ const RegisterScreen = () => {
             style={styles.icon}
           />
           <TextInput
-            style={[styles.input]}
+            style={[
+              styles.input,
+              focusedInput === "mail" && styles.inputFocused,
+            ]}
             placeholder="Mail"
             placeholderTextColor={colors.placeholder}
             onFocus={() => setFocusedInput("mail")}
@@ -257,12 +238,8 @@ const RegisterScreen = () => {
             autoCapitalize="none"
           />
         </View>
-        <View
-          style={[
-            styles.inputWrapper,
-            focusedInput === "password" && styles.inputFocused,
-          ]}
-        >
+
+        <View style={styles.inputContainer}>
           <icons.Lock
             width={24}
             height={24}
@@ -270,7 +247,10 @@ const RegisterScreen = () => {
             style={styles.icon}
           />
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              focusedInput === "password" && styles.inputFocused,
+            ]}
             placeholder="Mot de passe"
             placeholderTextColor={colors.placeholder}
             onFocus={() => setFocusedInput("password")}
@@ -283,12 +263,7 @@ const RegisterScreen = () => {
           />
         </View>
 
-        <View
-          style={[
-            styles.inputWrapper,
-            focusedInput === "confirmationPassword" && styles.inputFocused,
-          ]}
-        >
+        <View style={styles.inputContainer}>
           <icons.Lock
             width={24}
             height={24}
@@ -296,7 +271,10 @@ const RegisterScreen = () => {
             style={styles.icon}
           />
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              focusedInput === "confirmationPassword" && styles.inputFocused,
+            ]}
             placeholder="Confirmer le mot de passe"
             placeholderTextColor={colors.placeholder}
             onFocus={() => setFocusedInput("confirmationPassword")}
@@ -306,9 +284,11 @@ const RegisterScreen = () => {
             selectionColor={colors.secondary}
           />
         </View>
+
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>S'inscrire</Text>
         </TouchableOpacity>
+
         {message.text ? (
           <Text
             style={[
@@ -321,6 +301,7 @@ const RegisterScreen = () => {
             {message.text}
           </Text>
         ) : null}
+
         <View style={styles.footerContainer}>
           <Text style={styles.footerText}>Déjà un compte ?</Text>
           <TouchableOpacity onPress={handleLoginNavigation}>
@@ -332,4 +313,4 @@ const RegisterScreen = () => {
   );
 };
 
-export default RegisterScreen;
+export default Register;

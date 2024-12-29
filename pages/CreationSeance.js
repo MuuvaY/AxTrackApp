@@ -10,11 +10,15 @@ import {
   Alert,
   Modal,
   FlatList,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Pressable,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "../context/ThemeContext";
 import { getCategorieExo } from "../api/Categorie/Categorie";
 import { createSeance } from "../api/Seance/Seance";
+import { icons } from "./../assets/icons/icons";
 
 const JOURS_SEMAINE = [
   "Sélectionner un jour",
@@ -27,7 +31,7 @@ const JOURS_SEMAINE = [
   "Dimanche",
 ];
 
-const CreationSeance = () => {
+const CreationSeance = ({ route }) => {
   const theme = useTheme();
   const { colors, fonts } = theme;
   const navigation = useNavigation();
@@ -38,17 +42,15 @@ const CreationSeance = () => {
   const [selectedDay, setSelectedDay] = useState(JOURS_SEMAINE[0]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isModalVisible, setModalVisible] = useState(false); // Modal visibility for day selection
+  const [isModalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     loadCategories();
   }, []);
 
-  // Function to load categories from API
   const loadCategories = async () => {
     try {
       const data = await getCategorieExo();
-      console.log("Catégories récupérées :", data);
       setCategories(data);
       setLoading(false);
     } catch (error) {
@@ -57,7 +59,6 @@ const CreationSeance = () => {
     }
   };
 
-  // Function to create a session
   const handleCreateSeance = async () => {
     if (!seanceName.trim()) {
       Alert.alert("Erreur", "Veuillez entrer un nom de séance");
@@ -75,11 +76,24 @@ const CreationSeance = () => {
     }
 
     try {
-      await createSeance(seanceName, selectedDay, selectedCategory);
+      const newSeance = await createSeance(
+        seanceName,
+        selectedDay,
+        selectedCategory
+      );
+      if (route.params?.addSeance) {
+        route.params.addSeance({
+          seance_id: newSeance.seance_id,
+          seance_nom: seanceName,
+        });
+      }
       Alert.alert("Succès", "Séance créée avec succès", [
         {
           text: "OK",
-          onPress: () => navigation.goBack(),
+          onPress: () => {
+            route.params.addSeance(newSeance);
+            navigation.goBack();
+          },
         },
       ]);
     } catch (error) {
@@ -87,13 +101,11 @@ const CreationSeance = () => {
     }
   };
 
-  // Function to handle the day selection
   const handleDaySelect = (day) => {
     setSelectedDay(day);
-    setModalVisible(false); // Close the modal after selection
+    setModalVisible(false);
   };
 
-  // Render each item in the day selection modal
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.modalItem}
@@ -108,27 +120,35 @@ const CreationSeance = () => {
       flex: 1,
       backgroundColor: colors.background,
     },
-    scrollView: {
-      flex: 1,
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingHorizontal: 20,
+      marginTop: 30,
       marginBottom: 20,
     },
     title: {
       color: colors.primary,
       fontSize: 40,
       fontFamily: fonts.semiBold,
-      textAlign: "center",
-      marginTop: 30,
-      marginBottom: 20,
       letterSpacing: 2,
     },
-    buttonContainer: {
-      marginLeft: 20,
-      marginBottom: 20,
+    headerButton: {
+      padding: 10,
     },
-    buttonText: {
-      color: colors.secondary,
+    headerButtonText: {
       fontSize: 24,
       fontFamily: fonts.medium,
+    },
+    headerButtonInactive: {
+      color: colors.placeholder,
+    },
+    headerButtonActive: {
+      color: colors.secondary,
+    },
+    scrollView: {
+      flex: 1,
     },
     inputContainer: {
       marginHorizontal: 20,
@@ -136,16 +156,25 @@ const CreationSeance = () => {
     },
     input: {
       backgroundColor: colors.secondBackground,
-      height: 50,
-      fontFamily: fonts.medium,
-      fontSize: 28,
       borderRadius: 5,
+      height: 50,
+      fontSize: 28,
       color: colors.text,
-      paddingHorizontal: 15,
+      letterSpacing: 2,
+      fontFamily: fonts.medium,
+      paddingLeft: 45,
+      borderWidth: 2,
+      borderColor: "transparent",
+      justifyContent: "center",
+    },
+    icon: {
+      position: "absolute",
+      left: 10,
+      top: 13,
+      zIndex: 1000,
     },
     inputFocused: {
       borderColor: colors.secondary,
-      borderWidth: 1,
     },
     sectionTitle: {
       color: colors.text,
@@ -161,43 +190,37 @@ const CreationSeance = () => {
       marginBottom: 20,
     },
     categoryButton: {
-      backgroundColor: colors.secondBackground,
-      borderRadius: 5,
-      padding: 10,
+      borderRadius: 25,
+      paddingLeft: 15,
+      paddingRight: 15,
       margin: 5,
+      justifyContent: "center",
+      alignItems: "center",
+      borderColor: colors.placeholder,
+      borderWidth: 2,
     },
     categoryButtonText: {
-      color: colors.text,
+      color: colors.placeholder,
       fontFamily: fonts.medium,
-      fontSize: 18,
+      fontSize: 28,
     },
     selectedCategoryButton: {
-      backgroundColor: colors.secondary,
-    },
-    createButton: {
-      backgroundColor: colors.secondary,
-      padding: 15,
-      borderRadius: 10,
-      margin: 20,
-    },
-    createButtonText: {
-      color: colors.background,
-      textAlign: "center",
-      fontSize: 18,
-      fontFamily: fonts.semiBold,
+      backgroundColor: "rgba(255, 52, 0, 0.5)",
+      color: colors.text,
+      borderColor: colors.secondary,
     },
     modalContainer: {
       flex: 1,
       justifyContent: "center",
-      alignItems: "flex-end", // Align the modal to the right
-      marginRight: 20, // Add a little space from the right edge
+      alignItems: "flex-end",
+      marginRight: 20,
     },
     modalContent: {
-      backgroundColor: colors.background,
+      backgroundColor: colors.secondBackground,
       padding: 10,
       borderRadius: 10,
-      width: 200, // Width of the modal (small size)
-      maxHeight: "50%", // Limit the height of the modal
+      width: 200,
+      maxHeight: "50%",
     },
     modalItem: {
       padding: 10,
@@ -205,109 +228,145 @@ const CreationSeance = () => {
       borderBottomColor: colors.border,
     },
     modalItemText: {
-      fontSize: 18,
+      fontSize: 24,
       color: colors.text,
       fontFamily: fonts.medium,
+    },
+
+    TextSelect: {
+      color: colors.text,
+      fontSize: 28,
+      fontFamily: fonts.medium,
+
+      justifyContent: "center",
     },
   });
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView style={styles.scrollView}>
-          <Text style={styles.title}>Nouvelle Séance</Text>
-
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.buttonText}>Annuler</Text>
-          </TouchableOpacity>
-
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[
-                styles.input,
-                focusedInput === "seanceName" && styles.inputFocused,
-              ]}
-              placeholder="Nom de la séance"
-              placeholderTextColor={colors.placeholder}
-              value={seanceName}
-              onChangeText={setSeanceName}
-              onFocus={() => setFocusedInput("seanceName")}
-              onBlur={() => setFocusedInput(null)}
-              keyboardAppearance="dark"
-              selectionColor={colors.secondary}
-            />
-          </View>
-
-          <Text style={styles.sectionTitle}>Jour de la séance</Text>
-          <TouchableOpacity
-            style={styles.input}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text style={{ color: colors.text }}>
-              {selectedDay === JOURS_SEMAINE[0]
-                ? "Sélectionner un jour"
-                : selectedDay}
-            </Text>
-          </TouchableOpacity>
-
-          {/* Modal for day selection */}
-          <Modal
-            visible={isModalVisible}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={() => setModalVisible(false)}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <FlatList
-                  data={JOURS_SEMAINE}
-                  renderItem={renderItem}
-                  keyExtractor={(item, index) => item + index}
-                />
-              </View>
-            </View>
-          </Modal>
-
-          <Text style={styles.sectionTitle}>Catégorie de la séance</Text>
-          <View style={styles.buttonCategoryContainer}>
-            {categories.map((category, index) => (
-              <TouchableOpacity
-                key={category.categorie_exercice_id || index}
-                style={[
-                  styles.categoryButton,
-                  selectedCategory === category.categorie_exercice_id &&
-                    styles.selectedCategoryButton,
-                ]}
-                onPress={() =>
-                  setSelectedCategory(category.categorie_exercice_id)
-                }
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Text
+                style={[styles.headerButtonText, styles.headerButtonActive]}
               >
-                <Text
-                  style={[
-                    styles.categoryButtonText,
-                    selectedCategory === category.categorie_exercice_id && {
-                      color: colors.background,
-                    },
-                  ]}
-                >
-                  {category.categorie_exercice_nom}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                Annuler
+              </Text>
+            </TouchableOpacity>
+
+            <Text style={styles.title}>Séance</Text>
+
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={handleCreateSeance}
+              disabled={!seanceName.trim()}
+            >
+              <Text
+                style={[
+                  styles.headerButtonText,
+                  seanceName.trim()
+                    ? styles.headerButtonActive
+                    : styles.headerButtonInactive,
+                ]}
+              >
+                Créer
+              </Text>
+            </TouchableOpacity>
           </View>
 
-          <TouchableOpacity
-            style={styles.createButton}
-            onPress={handleCreateSeance}
-          >
-            <Text style={styles.createButtonText}>Créer la séance</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.inputContainer}>
+              <icons.Tag
+                width={24}
+                height={24}
+                color={colors.primary}
+                style={styles.icon}
+              />
+              <TextInput
+                style={[
+                  styles.input,
+                  focusedInput === "seanceName" && styles.inputFocused,
+                ]}
+                placeholder="Nom de la séance"
+                placeholderTextColor={colors.placeholder}
+                value={seanceName}
+                onChangeText={setSeanceName}
+                onFocus={() => setFocusedInput("seanceName")}
+                onBlur={() => setFocusedInput(null)}
+                keyboardAppearance="dark"
+                selectionColor={colors.secondary}
+              />
+            </View>
+            <View style={styles.buttonCategoryContainer}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {categories.map((category) => (
+                  <Pressable
+                    key={category.categorie_exercice_id}
+                    style={[
+                      styles.categoryButton,
+                      selectedCategory === category.categorie_exercice_id &&
+                        styles.selectedCategoryButton,
+                    ]}
+                    onPress={() =>
+                      setSelectedCategory(category.categorie_exercice_id)
+                    }
+                  >
+                    <Text
+                      style={[
+                        styles.categoryButtonText,
+                        selectedCategory === category.categorie_exercice_id && {
+                          color: colors.text,
+                        },
+                      ]}
+                    >
+                      {category.categorie_exercice_nom}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
+            <View style={styles.inputContainer}>
+              <TouchableOpacity
+                style={styles.input}
+                onPress={() => setModalVisible(true)}
+              >
+                <icons.Calendar
+                  width={24}
+                  height={24}
+                  color={colors.primary}
+                  style={styles.icon}
+                />
+                <Text style={styles.TextSelect}>{selectedDay}</Text>
+              </TouchableOpacity>
+            </View>
+
+            <Modal
+              visible={isModalVisible}
+              transparent={true}
+              animationType="fade"
+              onRequestClose={() => setModalVisible(false)}
+            >
+              <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+                <View style={styles.modalContainer}>
+                  <View style={styles.modalContent}>
+                    <FlatList
+                      data={JOURS_SEMAINE}
+                      renderItem={renderItem}
+                      keyExtractor={(item, index) => item + index}
+                      style={styles.test}
+                    />
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            </Modal>
+          </ScrollView>
+        </SafeAreaView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

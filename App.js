@@ -32,7 +32,7 @@ const NavigationContent = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        gestureEnabled: false, // Désactiver le glissement pour tous les écrans
+        gestureEnabled: false,
       }}
     >
       {isAuthenticated ? (
@@ -51,22 +51,23 @@ const NavigationContent = () => {
           <Stack.Screen
             name="Exercice"
             component={Exercice}
-            options={{
+            options={({ route }) => ({
+              title: route.params?.seanceNom || "Exercice",
               headerStyle: {
-                backgroundColor: colors.background, // couleur verte
+                backgroundColor: colors.background,
                 shadowOpacity: 0,
                 elevation: 0,
               },
               headerTintColor: colors.placeholder,
 
               headerTitleStyle: {
-                fontSize: 45,
+                fontSize: 30,
                 fontFamily: fonts.semiBold,
                 color: colors.primary,
               },
               headerBackTitleVisible: false,
               headerBackTitle: "",
-            }}
+            })}
           />
           <Stack.Screen name="TestToken" component={TestTokenScreen} />
         </>
@@ -90,10 +91,10 @@ const NavigationContent = () => {
 
 const App = () => {
   const [fontsLoaded] = useFonts({
-    "MangoGrotesque-Medium": require("./assets/fonts/MangoGrotesque/MangoGrotesque-Medium.otf"),
-    "MangoGrotesque-SemiBold": require("./assets/fonts/MangoGrotesque/MangoGrotesque-SemiBold.otf"),
-    "MangoGrotesque-Bold": require("./assets/fonts/MangoGrotesque/MangoGrotesque-Bold.otf"),
-    "MangoGrotesque-Black": require("./assets/fonts/MangoGrotesque/MangoGrotesque-Black.otf"),
+    "MangoGrotesque-Medium": require("./assets/fonts/MangoGortesque/MangoGrotesque-Medium.ttf"),
+    "MangoGrotesque-SemiBold": require("./assets/fonts/MangoGortesque/MangoGrotesque-SemiBold.ttf"),
+    "MangoGrotesque-Bold": require("./assets/fonts/MangoGortesque/MangoGrotesque-Bold.ttf"),
+    "MangoGrotesque-Black": require("./assets/fonts/MangoGortesque/MangoGrotesque-Black.ttf"),
   });
 
   useEffect(() => {
