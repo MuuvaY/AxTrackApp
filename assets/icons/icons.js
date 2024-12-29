@@ -190,6 +190,120 @@ function EyeOff(props) {
   );
 }
 
+function DumbellCross(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="111"
+      height="111"
+      viewBox="0 0 111 111"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M66.6 66.6L44.4 44.4"
+        stroke="#FF3400"
+        strokeWidth="7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M86.2886 99.3681C84.5541 101.103 82.2015 102.078 79.7482 102.079C77.2948 102.079 74.9418 101.105 73.2068 99.3704C71.4717 97.636 70.4967 95.2833 70.4963 92.83C70.4959 90.3767 71.47 88.0237 73.2045 86.2886L65.0321 94.4656C63.297 96.2007 60.9438 97.1754 58.49 97.1754C56.0363 97.1754 53.683 96.2007 51.948 94.4656C50.2129 92.7305 49.2382 90.3773 49.2382 87.9235C49.2382 85.4698 50.2129 83.1165 51.948 81.3815L81.3815 51.948C83.1165 50.2129 85.4698 49.2382 87.9235 49.2382C90.3773 49.2382 92.7305 50.2129 94.4656 51.948C96.2007 53.683 97.1754 56.0363 97.1754 58.49C97.1754 60.9438 96.2007 63.297 94.4656 65.0321L86.2886 73.2045C88.0237 71.47 90.3767 70.4959 92.83 70.4963C95.2833 70.4967 97.636 71.4717 99.3704 73.2068C101.105 74.9418 102.079 77.2948 102.079 79.7482C102.078 82.2015 101.103 84.5541 99.3681 86.2886L86.2886 99.3681Z"
+        stroke="#FF3400"
+        strokeWidth="7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M99.4375 99.4375L92.9625 92.9625"
+        stroke="#FF3400"
+        strokeWidth="7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M18.0375 18.0375L11.5625 11.5625"
+        stroke="#FF3400"
+        strokeWidth="7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M29.6185 59.052C27.8834 60.7871 25.5302 61.7618 23.0764 61.7618C20.6227 61.7618 18.2694 60.7871 16.5344 59.052C14.7993 57.3169 13.8246 54.9637 13.8246 52.5099C13.8246 50.0562 14.7993 47.7029 16.5344 45.9679L24.7114 37.7955"
+        stroke="#FF3400"
+        strokeWidth="7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M27.1161 87.3707C28.1055 86.3706 28.1055 84.7464 27.1161 83.7463C26.1268 82.7462 24.5201 82.7462 23.5307 83.7463L15.1964 92.1792L6.85421 83.7543"
+        fill="#18FF13"
+      />
+    </Svg>
+  );
+}
+
+function Plus(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <Path d="M5 12h14" />
+      <Path d="M12 5v14" />
+    </Svg>
+  );
+}
+
+function ChevronRight(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <Path d="m9 18 6-6-6-6" />
+    </Svg>
+  );
+}
+
+function Calendar(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <Path d="M8 2v4" />
+      <Path d="M16 2v4" />
+      <Rect width="18" height="18" x="3" y="4" rx="2" />
+      <Path d="M3 10h18" />
+    </Svg>
+  );
+}
+
 export const icons = {
   Home,
   Dumbell,
@@ -200,4 +314,8 @@ export const icons = {
   Weight,
   Time,
   EyeOff,
+  DumbellCross,
+  Plus,
+  ChevronRight,
+  Calendar,
 };

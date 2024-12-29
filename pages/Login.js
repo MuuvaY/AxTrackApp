@@ -63,8 +63,8 @@ export default function LoginScreen({ navigation }) {
       backgroundColor: colors.secondBackground,
       marginBottom: 15,
       borderRadius: 5,
-      height: 50,
-      fontSize: 30,
+      // height: 50,
+      fontSize: 28,
       color: colors.text,
       letterSpacing: 2,
       fontFamily: fonts.medium,
@@ -74,6 +74,8 @@ export default function LoginScreen({ navigation }) {
       borderWidth: 2, //
       borderColor: "transparent",
       paddingVertical: 0,
+      includeFontPadding: false,
+      paddingVertical: 10,
     },
 
     inputFocused: {

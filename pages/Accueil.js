@@ -1,57 +1,12 @@
-// import { View, Text, StyleSheet, Image, SafeAreaView } from "react-native";
-// import { useTheme } from "../components/ThemeContext";
-
-// const Accueil = () => {
-//   const theme = useTheme();
-//   const { colors, fonts } = theme;
-
-//   useEffect(() => {
-//     const fetchUser = async () => {
-//       try {
-//         const response = await ApiManager.get("/profile");
-//         setUsername(response.data.username); // Assure-toi que l'API retourne un "username"
-//       } catch (error) {
-//         console.error("Error fetching user:", error);
-//       }
-//     };
-
-//     fetchUser();
-//   }, []);
-
-//   const styles = StyleSheet.create({
-//     container: {
-//       flex: 1,
-//       backgroundColor: colors.background,
-//     },
-//     title: {
-//       color: colors.primary,
-//       fontSize: 45,
-//       fontFamily: fonts.semiBold,
-//       left: 30,
-//       top: 30,
-//       letterSpacing: 2,
-//     },
-//     text: {
-//       color: colors.text,
-//       fontSize: 20,
-//       backgroundColor: colors.secondBackground,
-//     },
-//   });
-
-//   return (
-//     <View style={styles.container}>
-//       <SafeAreaView>
-//         <Text style={styles.title}>Accueil</Text>
-//         <Image />
-//       </SafeAreaView>
-//     </View>
-//   );
-// };
-
-// export default Accueil;
-
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  SafeAreaView,
+  TextInput,
+} from "react-native";
 import { useTheme } from "../context/ThemeContext";
 import ApiManager from "../api/ApiManager";
 
@@ -109,12 +64,31 @@ const Accueil = () => {
       alignSelf: "center",
       marginTop: 30,
     },
+
+    inputFocused: {
+      borderColor: colors.secondary,
+    },
+    input: {
+      backgroundColor: colors.secondBackground,
+      color: colors.text,
+      height: 50,
+      // fontFamily: fonts.medium, // Remplace par la bonne police si nécessaire
+      fontSize: 28,
+      borderRadius: 5,
+      paddingLeft: 20,
+      // paddingVertical: 20,
+      // textAlign: "left",
+      // textAlignVertical: "center", // Fonctionne sur Android
+      // multiline: true, // Permet de gérer plusieurs lignes
+      // numberOfLines: 1, // Limite à une ligne (si tu veux un input sur une seule ligne)
+    },
+    test: { width: 200 },
   });
 
   return (
     <View style={styles.container}>
       <SafeAreaView>
-        <Text style={styles.title}>
+        {/* <Text style={styles.title}>
           Bienvenue, {userData.prenom || "Utilisateur"} !
         </Text>
         <Text style={styles.subtitle}>
@@ -123,8 +97,26 @@ const Accueil = () => {
         <Text style={styles.infoText}>Nom : {userData.nom}</Text>
         <Text style={styles.infoText}>Email : {userData.email}</Text>
         <Text style={styles.infoText}>Téléphone : {userData.phone}</Text>
-        <Text style={styles.infoText}>Âge : {userData.age}</Text>
+        <Text style={styles.infoText}>Âge : {userData.age}</Text> */}
       </SafeAreaView>
+
+      <View style={styles.test}>
+        <TextInput
+          style={[
+            styles.input,
+            // focusedInput === "email" && styles.inputFocused,
+          ]}
+          placeholder="Mail"
+          placeholderTextColor={colors.placeholder}
+          // value={email}
+          // onChangeText={setEmail}
+          // onFocus={() => setFocusedInput("email")}
+          // onBlur={() => setFocusedInput(null)}
+          keyboardAppearance="dark"
+          selectionColor={colors.secondary}
+          autoCapitalize="none"
+        />
+      </View>
     </View>
   );
 };

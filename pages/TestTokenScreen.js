@@ -18,7 +18,7 @@ const TestTokenScreen = () => {
     try {
       const storedToken = await SecureStore.getItemAsync("userToken");
       setToken(storedToken);
-      console.log("Token récupéré :", storedToken);
+      // console.log("Token récupéré :", storedToken);
     } catch (error) {
       console.error("Erreur lors de la récupération du token :", error);
       Alert.alert("Erreur", "Impossible de récupérer le token.");
@@ -28,7 +28,7 @@ const TestTokenScreen = () => {
   const testProfileRoute = async () => {
     try {
       const response = await ApiManager.get("/profile");
-      console.log("Réponse de /profile :", response.data);
+      // console.log("Réponse de /profile :", response.data);
       setProfileData(response.data);
       Alert.alert("Succès", "Route sécurisée accessible !");
     } catch (error) {
