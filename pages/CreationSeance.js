@@ -17,7 +17,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "../context/ThemeContext";
 import { getCategorieExo } from "../api/Categorie/Categorie";
-import { createSeance } from "../api/Seance/Seance";
+import { createSeance, updateSeance } from "../api/Seance/Seance";
 import { icons } from "./../assets/icons/icons";
 
 const JOURS_SEMAINE = [
@@ -36,11 +36,19 @@ const CreationSeance = ({ route }) => {
   const { colors, fonts } = theme;
   const navigation = useNavigation();
 
+  // Récupérer les paramètres d'édition si disponibles
+  const isEditing = route.params?.isEditing || false;
+  const seanceId = route.params?.seanceId;
+
   const [focusedInput, setFocusedInput] = useState(null);
-  const [seanceName, setSeanceName] = useState("");
+  const [seanceName, setSeanceName] = useState(route.params?.seanceNom || "");
   const [categories, setCategories] = useState([]);
-  const [selectedDay, setSelectedDay] = useState(JOURS_SEMAINE[0]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedDay, setSelectedDay] = useState(
+    route.params?.jour_semaine || JOURS_SEMAINE[0]
+  );
+  const [selectedCategory, setSelectedCategory] = useState(
+    route.params?.categorie_exercice_id || null
+  );
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -59,7 +67,19 @@ const CreationSeance = ({ route }) => {
     }
   };
 
-  const handleCreateSeance = async () => {
+  const loadSeanceDetails = async () => {
+    try {
+      const seance = await getSeanceById(seanceId);
+      setSeanceName(seance.seance_nom);
+      setSelectedDay(seance.jour_semaine);
+      setSelectedCategory(seance.categorie_exercice_id);
+    } catch (error) {
+      Alert.alert("Erreur", "Impossible de charger les détails de la séance");
+    }
+  };
+
+  const handleSaveSeance = async () => {
+    console.log("Séance ID :", seanceId);
     if (!seanceName.trim()) {
       Alert.alert("Erreur", "Veuillez entrer un nom de séance");
       return;
@@ -76,28 +96,30 @@ const CreationSeance = ({ route }) => {
     }
 
     try {
-      const newSeance = await createSeance(
-        seanceName,
-        selectedDay,
-        selectedCategory
-      );
-      if (route.params?.addSeance) {
-        route.params.addSeance({
-          seance_id: newSeance.seance_id,
-          seance_nom: seanceName,
-        });
-      }
-      Alert.alert("Succès", "Séance créée avec succès", [
-        {
-          text: "OK",
-          onPress: () => {
-            route.params.addSeance(newSeance);
-            navigation.goBack();
+      if (isEditing) {
+        await updateSeance(seanceId, seanceName, selectedDay, selectedCategory);
+        Alert.alert("Succès", "Séance modifiée avec succès", [
+          {
+            text: "OK",
+            onPress: () => navigation.goBack(),
           },
-        },
-      ]);
+        ]);
+      } else {
+        await createSeance(seanceName, selectedDay, selectedCategory);
+        Alert.alert("Succès", "Séance créée avec succès", [
+          {
+            text: "OK",
+            onPress: () => navigation.goBack(),
+          },
+        ]);
+      }
     } catch (error) {
-      Alert.alert("Erreur", "Erreur lors de la création de la séance");
+      Alert.alert(
+        "Erreur",
+        isEditing
+          ? "Erreur lors de la modification de la séance2"
+          : "Erreur lors de la création de la séance"
+      );
     }
   };
 
@@ -258,11 +280,13 @@ const CreationSeance = ({ route }) => {
               </Text>
             </TouchableOpacity>
 
-            <Text style={styles.title}>Séance</Text>
+            <Text style={styles.title}>
+              {isEditing ? "Modifier la séance" : "Nouvelle séance"}
+            </Text>
 
             <TouchableOpacity
               style={styles.headerButton}
-              onPress={handleCreateSeance}
+              onPress={handleSaveSeance}
               disabled={!seanceName.trim()}
             >
               <Text
@@ -273,7 +297,7 @@ const CreationSeance = ({ route }) => {
                     : styles.headerButtonInactive,
                 ]}
               >
-                Créer
+                {isEditing ? "Modifier" : "Créer"}
               </Text>
             </TouchableOpacity>
           </View>

@@ -36,9 +36,36 @@ export const createSeance = async (
   }
 };
 
-export const deleteSeance = async (seanceId) => {
+export const updateSeance = async (
+  seance_id,
+  seance_nom,
+  jour_semaine,
+  categorie_exercice_id
+) => {
+  const seanceData = {
+    seance_nom,
+    jour_semaine,
+    categorie_exercice_id,
+  };
+
   try {
-    const response = await ApiManager.delete(`/seances/${seanceId}`);
+    const response = await ApiManager.patch(
+      `/seances/${seance_id}`,
+      seanceData
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la modification de la séance :",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+export const deleteSeance = async (seance_id) => {
+  try {
+    const response = await ApiManager.delete(`/seances/${seance_id}`);
     return response.data;
   } catch (error) {
     console.error("Erreur lors de la suppression de la séance:", error);

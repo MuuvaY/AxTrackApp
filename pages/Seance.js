@@ -20,21 +20,26 @@ const Seance = () => {
 
   const [seances, setSeances] = useState([]);
 
+  const fetchSeances = async () => {
+    try {
+      const data = await getSeances();
+      setSeances(data);
+    } catch (err) {
+      setError("Impossible de récupérer les séances.");
+    }
+  };
   useEffect(() => {
-    const fetchSeances = async () => {
-      try {
-        const data = await getSeances();
-        setSeances(data);
-      } catch (err) {
-        setError("Impossible de récupérer les séances.");
-      }
-    };
     fetchSeances();
   }, []);
 
-  const addSeance = (newSeance) => {
-    setSeances((prevSeances) => [...prevSeances, newSeance]);
-  };
+  // Ajout d'un focus listener pour recharger les séances
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      fetchSeances();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const handleDeleteSeance = async (seanceId) => {
     try {
@@ -139,7 +144,14 @@ const Seance = () => {
             seances.map((seance, index) => (
               <View key={seance.id || index} style={styles.exerciceContainer}>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Exercice")}
+                  onPress={() =>
+                    navigation.navigate("Exercice", {
+                      seanceId: seance.seance_id,
+                      seanceNom: seance.seance_nom,
+                      jour_semaine: seance.jour_semaine,
+                      categorie_exercice_id: seance.categorie_exercice_id,
+                    })
+                  }
                 >
                   <View style={styles.exerciceRow}>
                     <Text style={styles.exercice}>{seance.seance_nom}</Text>
@@ -168,9 +180,7 @@ const Seance = () => {
           )}
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={() =>
-              navigation.navigate("CreationSeance", { addSeance: addSeance })
-            }
+            onPress={() => navigation.navigate("CreationSeance")}
           >
             <icons.Plus
               width={30}

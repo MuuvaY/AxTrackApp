@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 import ApiManager from "../api/ApiManager";
+import WeekDays from "../components/WeekDays";
 
 const Accueil = () => {
   const theme = useTheme();
@@ -87,19 +88,9 @@ const Accueil = () => {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView>
-        {/* <Text style={styles.title}>
-          Bienvenue, {userData.prenom || "Utilisateur"} !
-        </Text>
-        <Text style={styles.subtitle}>
-          Voici vos informations personnelles :
-        </Text>
-        <Text style={styles.infoText}>Nom : {userData.nom}</Text>
-        <Text style={styles.infoText}>Email : {userData.email}</Text>
-        <Text style={styles.infoText}>Téléphone : {userData.phone}</Text>
-        <Text style={styles.infoText}>Âge : {userData.age}</Text> */}
-      </SafeAreaView>
+      <SafeAreaView></SafeAreaView>
 
+      <WeekDays />
       <View style={styles.test}>
         <TextInput
           style={[

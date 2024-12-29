@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Text } from "react-native";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -9,6 +9,7 @@ import { useFonts } from "expo-font";
 import { setupInterceptor } from "./api/ApiManager";
 import TestTokenScreen from "./pages/TestTokenScreen";
 import { useTheme } from "./context/ThemeContext";
+import { icons } from "./assets/icons/icons";
 
 import HomeTabs from "./navigation/HomeTabs";
 import Login from "./pages/Login";
@@ -28,6 +29,11 @@ const NavigationContent = () => {
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
+  const styles = StyleSheet.create({
+    headerRightButton: {
+      marginRight: 20, // Vous pouvez ajuster la marge si nécessaire
+    },
+  });
 
   return (
     <Stack.Navigator
@@ -67,6 +73,18 @@ const NavigationContent = () => {
               },
               headerBackTitleVisible: false,
               headerBackTitle: "",
+              headerRight: () => (
+                <TouchableOpacity
+                  onPress={() => setIsModalVisible(true)}
+                  style={styles.headerRightButton}
+                >
+                  <icons.Ellipsis
+                    width={24}
+                    height={24}
+                    color={colors.placeholder}
+                  />
+                </TouchableOpacity>
+              ),
             })}
           />
           <Stack.Screen name="TestToken" component={TestTokenScreen} />
