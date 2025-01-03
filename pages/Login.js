@@ -20,6 +20,7 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [focusedInput, setFocusedInput] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+
   const { signIn } = useAuth();
   const theme = useTheme();
   const { colors, fonts } = theme;
@@ -31,7 +32,7 @@ export default function LoginScreen({ navigation }) {
 
       await signIn(token);
 
-      navigation.navigate("Home");
+      // navigation.navigate("Accueil");
     } catch (error) {
       console.error("Login error:", error);
       Alert.alert("Login Failed", "Please check your credentials");

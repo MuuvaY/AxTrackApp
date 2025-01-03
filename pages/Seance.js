@@ -32,7 +32,6 @@ const Seance = () => {
     fetchSeances();
   }, []);
 
-  // Ajout d'un focus listener pour recharger les séances
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       fetchSeances();
@@ -40,18 +39,6 @@ const Seance = () => {
 
     return unsubscribe;
   }, [navigation]);
-
-  const handleDeleteSeance = async (seanceId) => {
-    try {
-      await deleteSeance(seanceId);
-      setSeances((prevSeances) =>
-        prevSeances.filter((seance) => seance.id !== seanceId)
-      );
-      Alert.alert("Succès", "La séance a été supprimée.");
-    } catch (error) {
-      Alert.alert("Erreur", "Impossible de supprimer la séance.");
-    }
-  };
 
   const styles = StyleSheet.create({
     container: {
@@ -73,7 +60,6 @@ const Seance = () => {
       height: 100,
     },
     seanceContainer: {
-      // marginTop: 100,
       alignItems: "center", // Centre l'élément dans le container
       justifyContent: "center", // Centre l'élément verticalement
     },
@@ -89,12 +75,7 @@ const Seance = () => {
     icon: {
       color: colors.background, // Couleur de l'icône
     },
-    seanceText: {
-      color: colors.text,
-      fontSize: 20,
-      fontFamily: fonts.semiBold,
-      marginTop: 20,
-    },
+
     noSeance: {
       fontSize: 40,
       fontFamily: fonts.medium,

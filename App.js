@@ -18,6 +18,7 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import CreationSeance from "./pages/CreationSeance";
 import Exercice from "./pages/Exercice";
+import ExerciceDetail from "./pages/ExerciceDetail";
 
 const Stack = createStackNavigator();
 
@@ -31,7 +32,7 @@ const NavigationContent = () => {
   }
   const styles = StyleSheet.create({
     headerRightButton: {
-      marginRight: 20, // Vous pouvez ajuster la marge si nécessaire
+      marginRight: 20,
     },
   });
 
@@ -44,7 +45,7 @@ const NavigationContent = () => {
       {isAuthenticated ? (
         <>
           <Stack.Screen
-            name="Home"
+            name="Accueil"
             component={HomeTabs}
             options={{ headerShown: false }}
           />
@@ -87,6 +88,27 @@ const NavigationContent = () => {
               ),
             })}
           />
+          <Stack.Screen
+            name="ExerciceDetail"
+            component={ExerciceDetail}
+            options={{
+              headerStyle: {
+                backgroundColor: colors.background,
+                shadowOpacity: 0,
+                elevation: 0,
+              },
+              headerTintColor: colors.placeholder,
+
+              headerTitleStyle: {
+                fontSize: 30,
+                fontFamily: fonts.semiBold,
+                color: colors.primary,
+              },
+              headerBackTitleVisible: false,
+              headerBackTitle: "",
+            }}
+          />
+
           <Stack.Screen name="TestToken" component={TestTokenScreen} />
         </>
       ) : (

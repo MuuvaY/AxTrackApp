@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,13 @@ import {
   Image,
   Modal,
   Alert,
+  ScrollView,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useTheme } from "../context/ThemeContext";
 import { icons } from "./../assets/icons/icons";
 import { deleteSeance } from "./../api/Seance/Seance";
+import { getExercices } from "../api/Exercice/Exercice";
 
 const Exercice = () => {
   const theme = useTheme();
@@ -25,7 +27,23 @@ const Exercice = () => {
   const seanceNom = route.params?.seanceNom || "Séance";
   const seanceId = route.params?.seanceId;
 
+  const [exercices, setExercices] = useState([]);
+
   const elements = []; // Remplacer par les données pertinentes
+
+  const fetchExercices = async () => {
+    if (!seanceId) return; // Vérifie si seanceId est disponible
+    try {
+      const data = await getExercices(seanceId);
+      setExercices(data);
+    } catch (err) {
+      Alert.alert("Erreur", "Impossible de récupérer les exercices.");
+    }
+  };
+
+  useEffect(() => {
+    fetchExercices();
+  }, []);
 
   const handleDelete = () => {
     setIsModalVisible(false);
@@ -121,6 +139,27 @@ const Exercice = () => {
     modalOptionDelete: {
       color: "#FF3B30",
     },
+    exerciceContainer: {
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    exercice: {
+      backgroundColor: colors.secondary,
+      height: 62,
+      width: 350,
+      justifyContent: "center",
+      paddingHorizontal: 10,
+      margin: 10,
+      borderRadius: 8,
+    },
+    exerciceText: {
+      color: colors.background,
+      fontFamily: fonts.bold,
+      fontSize: 32,
+      textTransform: "uppercase",
+      // textAlign: "center",
+      // textAlignVertical: "center",
+    },
   });
 
   return (
@@ -131,49 +170,72 @@ const Exercice = () => {
             <icons.Ellipsis width={24} height={24} color={colors.placeholder} />
           </TouchableOpacity>
         </View>
-
-        {elements.length > 0 ? (
-          <Text>Il y a des éléments à afficher.</Text>
-        ) : (
-          <View style={styles.noSeanceContainer}>
-            <Image source={require("../assets/img/DumbellCross.webp")} />
-            <Text style={styles.noSeance}>
-              Aucun exercice enregistré pour le moment.
-            </Text>
-          </View>
-        )}
-
-        <Modal
-          visible={isModalVisible}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setIsModalVisible(false)}
+        <ScrollView
+          contentContainerStyle={[
+            styles.exerciceContainer,
+            { paddingBottom: 100 },
+          ]}
         >
-          <TouchableOpacity
-            style={styles.modalContainer}
-            activeOpacity={1}
-            onPress={() => setIsModalVisible(false)}
-          >
-            <View style={styles.modalContent}>
-              <TouchableOpacity style={styles.modalOption} onPress={handleEdit}>
-                <icons.Edit width={24} height={24} color={colors.text} />
-                <Text style={styles.modalOptionText}>Modifier la séance</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.modalOption}
-                onPress={handleDelete}
-              >
-                <icons.Trash width={24} height={24} color="#FF3B30" />
-                <Text
-                  style={[styles.modalOptionText, styles.modalOptionDelete]}
-                >
-                  Supprimer la séance
-                </Text>
-              </TouchableOpacity>
+          {exercices.length > 0 ? (
+            <View>
+              {exercices.map((exercice, index) => (
+                <View key={index}>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("ExerciceDetail")}
+                  >
+                    <View style={styles.exercice}>
+                      <Text style={styles.exerciceText}>
+                        {exercice.nom_exercice}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ))}
             </View>
-          </TouchableOpacity>
-        </Modal>
+          ) : (
+            <View style={styles.noSeanceContainer}>
+              <Image source={require("../assets/img/DumbellCross.webp")} />
+              <Text style={styles.noSeance}>
+                Aucun exercice enregistré pour le moment.
+              </Text>
+            </View>
+          )}
+
+          <Modal
+            visible={isModalVisible}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setIsModalVisible(false)}
+          >
+            <TouchableOpacity
+              style={styles.modalContainer}
+              activeOpacity={1}
+              onPress={() => setIsModalVisible(false)}
+            >
+              <View style={styles.modalContent}>
+                <TouchableOpacity
+                  style={styles.modalOption}
+                  onPress={handleEdit}
+                >
+                  <icons.Edit width={24} height={24} color={colors.text} />
+                  <Text style={styles.modalOptionText}>Modifier la séance</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.modalOption}
+                  onPress={handleDelete}
+                >
+                  <icons.Trash width={24} height={24} color="#FF3B30" />
+                  <Text
+                    style={[styles.modalOptionText, styles.modalOptionDelete]}
+                  >
+                    Supprimer la séance
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </Modal>
+        </ScrollView>
       </SafeAreaView>
     </View>
   );
