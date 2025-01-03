@@ -60,22 +60,21 @@ const Seance = () => {
       height: 100,
     },
     seanceContainer: {
-      alignItems: "center", // Centre l'élément dans le container
-      justifyContent: "center", // Centre l'élément verticalement
+      alignItems: "center",
+      justifyContent: "center",
     },
     buttonContainer: {
       marginTop: 20,
-      backgroundColor: colors.primary, // Utilisation de la couleur primaire du thème
+      backgroundColor: colors.primary,
       height: 52,
       width: 52,
       borderRadius: 7,
-      justifyContent: "center", // Centrer l'icône dans le bouton
-      alignItems: "center", // Centrer l'icône dans le bouton
+      justifyContent: "center",
+      alignItems: "center",
     },
     icon: {
-      color: colors.background, // Couleur de l'icône
+      color: colors.background,
     },
-
     noSeance: {
       fontSize: 40,
       fontFamily: fonts.medium,

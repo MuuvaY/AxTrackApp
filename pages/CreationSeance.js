@@ -178,7 +178,7 @@ const CreationSeance = ({ route }) => {
     input: {
       backgroundColor: colors.secondBackground,
       borderRadius: 5,
-      height: 50,
+      height: 54,
       fontSize: 28,
       color: colors.text,
       letterSpacing: 2,
@@ -258,7 +258,6 @@ const CreationSeance = ({ route }) => {
       color: colors.text,
       fontSize: 28,
       fontFamily: fonts.medium,
-
       justifyContent: "center",
     },
   });

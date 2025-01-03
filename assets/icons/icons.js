@@ -405,6 +405,88 @@ function Ellipsis(props) {
     </Svg>
   );
 }
+
+function Zap(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <Path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />
+    </Svg>
+  );
+}
+
+function Settings(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <Path d="M20 7h-9" />
+      <Path d="M14 17H5" />
+      <Circle cx="17" cy="17" r="3" />
+      <Circle cx="7" cy="7" r="3" />
+    </Svg>
+  );
+}
+
+function ArrowDownStat(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <Path d="m3 16 4 4 4-4" />
+      <Path d="M7 20V4" />
+      <Path d="M11 4h10" />
+      <Path d="M11 8h7" />
+      <Path d="M11 12h4" />
+    </Svg>
+  );
+}
+function Hand(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M8.57145 0C9.36162 0 10 0.558594 10 1.25V5.625H7.14287V1.25C7.14287 0.558594 7.78127 0 8.57145 0ZM2.85716 2.5C2.85716 1.80859 3.49555 1.25 4.28573 1.25C5.07591 1.25 5.7143 1.80859 5.7143 2.5V5.625H2.85716V2.5ZM11.4286 2.5C11.4286 1.80859 12.067 1.25 12.8572 1.25C13.6473 1.25 14.2857 1.80859 14.2857 2.5V6.25C14.2857 6.94141 13.6473 7.5 12.8572 7.5C12.067 7.5 11.4286 6.94141 11.4286 6.25V2.5ZM15.7143 5C15.7143 4.30859 16.3527 3.75 17.1429 3.75C17.9331 3.75 18.5714 4.30859 18.5714 5V7.5C18.5714 8.19141 17.9331 8.75 17.1429 8.75C16.3527 8.75 15.7143 8.19141 15.7143 7.5V5ZM11.4286 8.4375V8.41406C11.8482 8.625 12.3348 8.75 12.8572 8.75C13.4464 8.75 13.9911 8.59375 14.4464 8.32812C14.8348 9.30078 15.8973 10 17.1429 10C17.6652 10 18.1518 9.87891 18.5714 9.66406V10C18.5714 12.043 17.4509 13.8594 15.7143 15V18.75C15.7143 19.4414 15.0759 20 14.2857 20H7.14287C6.3527 20 5.7143 19.4414 5.7143 18.75V15.6875C4.94198 15.3789 4.23216 14.9531 3.62055 14.418L3.1027 13.9648C2.03127 13.0273 1.42859 11.7539 1.42859 10.4297V9.375C1.42859 7.99609 2.70984 6.875 4.28573 6.875H8.2143C9.20091 6.875 10 7.57422 10 8.4375C10 9.30078 9.20091 10 8.2143 10H5.7143C5.32145 10 5.00002 10.2812 5.00002 10.625C5.00002 10.9688 5.32145 11.25 5.7143 11.25H8.2143C9.99109 11.25 11.4286 9.99219 11.4286 8.4375Z"
+        fill="#18FF13"
+      />
+    </Svg>
+  );
+}
+
 export const icons = {
   Home,
   Dumbell,
@@ -424,4 +506,8 @@ export const icons = {
   Trash,
   Edit,
   Ellipsis,
+  Zap,
+  Settings,
+  ArrowDownStat,
+  Hand,
 };
