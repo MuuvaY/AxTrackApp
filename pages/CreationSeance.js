@@ -79,7 +79,6 @@ const CreationSeance = ({ route }) => {
   };
 
   const handleSaveSeance = async () => {
-    console.log("Séance ID :", seanceId);
     if (!seanceName.trim()) {
       Alert.alert("Erreur", "Veuillez entrer un nom de séance");
       return;
