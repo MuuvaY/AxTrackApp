@@ -52,7 +52,6 @@ const Seance = () => {
       left: 30,
       top: 30,
       letterSpacing: 2,
-      // zIndex: 1000,
     },
     titleContainer: {
       backgroundColor: colors.background,

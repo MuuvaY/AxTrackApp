@@ -232,6 +232,8 @@
 
 // export default App;
 
+// App.js
+
 import React from "react";
 import { Text } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -249,7 +251,11 @@ const App = () => {
   });
 
   if (!fontsLoaded) {
-    return <Text>Loading...</Text>;
+    return (
+      <>
+        <Text>Loading...</Text>
+      </>
+    );
   }
 
   return (

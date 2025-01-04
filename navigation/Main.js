@@ -8,8 +8,8 @@ const Main = () => {
   const { signOut } = useAuth();
 
   useEffect(() => {
-    setupInterceptor(signOut);
-  }, []);
+    setupInterceptor(signOut); // Vérifie que signOut est bien passé à l'intercepteur
+  }, [signOut]);
 
   return (
     <NavigationContainer>

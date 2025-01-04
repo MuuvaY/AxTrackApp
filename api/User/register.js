@@ -11,7 +11,6 @@ export const registerUser = async (nom, prenom, email, password) => {
       password,
     });
 
-    // Retourner la réponse de l'API (par exemple, les informations de l'utilisateur créé ou un message de succès)
     return response.data;
   } catch (error) {
     console.error("Registration error:", error.response?.data || error.message);

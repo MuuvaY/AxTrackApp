@@ -28,15 +28,19 @@
 
 // export default ApiManager;
 
+// ApiManager.js
+
 import axios from "axios";
 import { retrieveToken, removeToken } from "../utils/secureStore";
+import { useAuth } from "../context/AuthContext"; // Assure-toi que useAuth est bien utilisé ici
 
 const ApiManager = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: "http://localhost:3000/", // Vérifie que c'est bien l'URL correcte
   timeout: 5000,
 });
 
 export const setupInterceptor = (onLogout) => {
+  // Intercepteur pour les requêtes
   ApiManager.interceptors.request.use(
     async (config) => {
       const token = await retrieveToken();
@@ -50,18 +54,28 @@ export const setupInterceptor = (onLogout) => {
     }
   );
 
+  // Intercepteur pour les réponses
   ApiManager.interceptors.response.use(
     (response) => {
       return response;
     },
     async (error) => {
+      // Vérifie si le code d'état est 401 (Token expiré ou invalide)
       if (error.response && error.response.status === 401) {
-        console.log("Token expiré ou non valide. Déconnexion en cours...");
-        await removeToken(); // Suppression du token
+        console.log("Token expiré ou invalide. Déconnexion en cours...");
+
+        // Supprimer le token expiré
+        await removeToken();
+
+        // Appel de la fonction de déconnexion
         if (onLogout) {
-          onLogout(); // Appelle une fonction passée en paramètre
+          onLogout(); // La fonction signOut est appelée ici
         }
+
+        // Optionnel: Affiche un message ou fais un traitement supplémentaire si nécessaire
+        console.log("Déconnexion réussie.");
       }
+
       return Promise.reject(error);
     }
   );
