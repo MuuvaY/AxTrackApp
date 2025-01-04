@@ -29,7 +29,6 @@ const CreationExercice = () => {
   const [requiresAssise, setRequiresAssise] = useState(false);
   const [isCustomInputVisible, setIsCustomInputVisible] = useState(false);
   const [customInputValue, setCustomInputValue] = useState("");
-  const [degressifInputValue, setdegressifInputValue] = useState("");
 
   const animatedHeight = useRef(new Animated.Value(0)).current;
 
@@ -376,8 +375,8 @@ const CreationExercice = () => {
                   style={styles.expandableInput}
                   placeholder="Dégressif"
                   placeholderTextColor={colors.placeholder}
-                  value={degressifInputValue}
-                  onChangeText={setdegressifInputValue}
+                  value={customInputValue}
+                  onChangeText={setCustomInputValue}
                   keyboardAppearance="dark"
                   selectionColor={colors.secondary}
                 />
