@@ -2,7 +2,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Accueil from "../pages/Accueil";
 import Seance from "../pages/Seance";
 import Profile from "../pages/Profile";
-import Test from "../pages/TestTokenScreen";
 
 import { StyleSheet, View, Image } from "react-native";
 import { useTheme } from "../context/ThemeContext";

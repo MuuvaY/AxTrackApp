@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
+import { icons } from "./../assets/icons/icons";
 
 const OptionsModal = ({
   visible,
@@ -17,7 +18,6 @@ const OptionsModal = ({
   fonts,
   editText = "Modifier",
   deleteText = "Supprimer",
-  icons,
 }) => {
   return (
     <Modal

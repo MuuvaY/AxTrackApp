@@ -10,11 +10,14 @@ import {
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { getUserProfile } from "../api/User/User";
+import { useNavigation } from "@react-navigation/native";
+import { icons } from "./../assets/icons/icons";
 
 const Profile = () => {
   const theme = useTheme();
   const { colors, fonts } = theme;
   const { signOut } = useAuth();
+  const navigation = useNavigation();
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -90,32 +93,87 @@ const Profile = () => {
       color: colors.secondary,
       marginBottom: 10,
     },
+    dataContainer: {
+      flex: 1,
+      justifyContent: "flex-start",
+      alignItems: "center",
+      marginTop: 50,
+    },
     containerTitle: {
       left: 30,
       top: 30,
+    },
+    dataPersoContainer: {
+      height: 54,
+      width: 355,
+      backgroundColor: colors.secondBackground,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-start",
+      borderRadius: 5,
+    },
+    dataPersoText: {
+      fontFamily: fonts.medium,
+      color: colors.text,
+      fontSize: 30,
+      paddingLeft: 45,
+    },
+    icon: {
+      position: "absolute",
+      left: 10,
+    },
+    icon2: {
+      position: "absolute",
+      right: 10,
     },
   });
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
+      <SafeAreaView>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      </SafeAreaView>
     );
   }
 
-  if (error) {
-    return <Text style={styles.errorText}>{error}</Text>;
-  }
+  // if (error) {
+  //   return (
+  //     <SafeAreaView>
+  //       {/* <Text style={styles.errorText}>{error}</Text>{" "} */}
+  //     </SafeAreaView>
+  //   );
+  // }
 
   return (
     <View style={styles.container}>
       <SafeAreaView>
         <View style={styles.containerTitle}>
           <Text style={styles.title}>Profil</Text>
-          <Text style={styles.titleName}>
-            {user.nom} {user.prenom}
-          </Text>
+          <Text style={styles.titleName}>{/* {user.nom} {user.prenom} */}</Text>
+        </View>
+        <View style={styles.dataContainer}>
+          <TouchableOpacity
+            style={styles.dataPerso}
+            onPress={() => navigation.navigate("DonnerPerso")}
+          >
+            <View style={styles.dataPersoContainer}>
+              <icons.UserRound
+                width={24}
+                height={24}
+                color={colors.primary}
+                style={styles.icon}
+              />
+              <Text style={styles.dataPersoText}>Donnée Personnel</Text>
+              <icons.ChevronRight
+                width={30}
+                height={30}
+                color={colors.placeholder}
+                style={styles.icon2}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutText}>Se déconnecter</Text>

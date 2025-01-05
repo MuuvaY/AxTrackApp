@@ -8,7 +8,7 @@ const Main = () => {
   const { signOut } = useAuth();
 
   useEffect(() => {
-    setupInterceptor(signOut); // Vérifie que signOut est bien passé à l'intercepteur
+    setupInterceptor(signOut);
   }, [signOut]);
 
   return (

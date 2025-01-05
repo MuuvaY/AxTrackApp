@@ -39,75 +39,28 @@ const Accueil = () => {
     container: {
       flex: 1,
       backgroundColor: colors.background,
-      paddingHorizontal: 20,
+    },
+    containerTitle: {
+      left: 30,
+      top: 30,
+      marginBottom: 80,
     },
     title: {
       color: colors.primary,
       fontSize: 45,
       fontFamily: fonts.semiBold,
       letterSpacing: 2,
-      marginTop: 20,
     },
-    subtitle: {
-      color: colors.text,
-      fontSize: 20,
-      fontFamily: fonts.medium,
-      marginTop: 10,
-    },
-    infoText: {
-      color: colors.text,
-      fontSize: 16,
-      marginTop: 5,
-    },
-    image: {
-      width: 200,
-      height: 200,
-      alignSelf: "center",
-      marginTop: 30,
-    },
-
-    inputFocused: {
-      borderColor: colors.secondary,
-    },
-    input: {
-      backgroundColor: colors.secondBackground,
-      color: colors.text,
-      height: 50,
-      fontFamily: fonts.medium, // Remplace par la bonne police si nécessaire
-      fontSize: 28,
-      borderRadius: 5,
-      paddingLeft: 20,
-      // paddingVertical: 20,
-      // textAlign: "left",
-      // textAlignVertical: "center", // Fonctionne sur Android
-      // multiline: true, // Permet de gérer plusieurs lignes
-      // numberOfLines: 1, // Limite à une ligne (si tu veux un input sur une seule ligne)
-    },
-    test: { width: 200 },
   });
 
   return (
     <View style={styles.container}>
-      <SafeAreaView></SafeAreaView>
-
-      <WeekDays />
-      <View style={styles.test}>
-        <TextInput
-          style={[
-            styles.input,
-            // focusedInput === "email" && styles.inputFocused,
-          ]}
-          placeholder="Mail"
-          placeholderTextColor={colors.placeholder}
-          // value={email}
-          // onChangeText={setEmail}
-          // onFocus={() => setFocusedInput("email")}
-          // onBlur={() => setFocusedInput(null)}
-          keyboardAppearance="dark"
-          selectionColor={colors.secondary}
-          autoCapitalize="none"
-        />
-      </View>
+      <SafeAreaView>
+        <View style={styles.containerTitle}>
+          <Text style={styles.title}>Accueil</Text>
+        </View>
+        <WeekDays />
+      </SafeAreaView>
     </View>
   );
 };

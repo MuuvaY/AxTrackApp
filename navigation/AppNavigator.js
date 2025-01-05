@@ -11,9 +11,10 @@ import CreationSeance from "../pages/CreationSeance";
 import Exercice from "../pages/Exercice";
 import ExerciceDetail from "../pages/ExerciceDetail";
 import CreationExercice from "../pages/CreationExercice";
-import TestTokenScreen from "../pages/TestTokenScreen";
 import OptionsModal from "../components/OptionsModal";
 import { UseSeanceActions } from "../components/UseSeanceActions";
+import DonnerPerso from "../pages/DonnerPerso";
+import { icons } from "./../assets/icons/icons";
 
 const Stack = createStackNavigator();
 
@@ -43,7 +44,11 @@ const AppNavigator = () => {
             component={HomeTabs}
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{ headerShown: false, headerBackTitleVisible: false }}
+          />
           <Stack.Screen
             name="CreationSeance"
             component={CreationSeance}
@@ -56,6 +61,7 @@ const AppNavigator = () => {
               title: route.params?.seanceNom || "Exercice",
               headerStyle: { backgroundColor: colors.background },
               headerTintColor: colors.placeholder,
+              headerBackTitleVisible: false,
               headerTitleStyle: {
                 fontSize: 30,
                 fontFamily: fonts.semiBold,
@@ -91,9 +97,13 @@ const AppNavigator = () => {
           <Stack.Screen
             name="CreationExercice"
             component={CreationExercice}
-            options={{ headerShown: false }}
+            options={{ headerShown: false, headerBackTitleVisible: false }}
           />
-          <Stack.Screen name="TestToken" component={TestTokenScreen} />
+          <Stack.Screen
+            name="DonnerPerso"
+            component={DonnerPerso}
+            options={{ headerBackTitleVisible: false }}
+          />
         </>
       ) : (
         <>
