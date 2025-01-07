@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -25,6 +25,8 @@ const Exercice = () => {
   const [exercices, setExercices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [sessionActive, setSessionActive] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [intervalId, setIntervalId] = useState(null);
 
   const toggleSession = () => {
     if (sessionActive) {
@@ -35,13 +37,32 @@ const Exercice = () => {
         },
         {
           text: "Terminer",
-          onPress: () => setSessionActive(false),
+          onPress: () => {
+            setSessionActive(false);
+            clearInterval(intervalId);
+            setTimer(0);
+            navigation.navigate("FinSeance");
+          },
         },
       ]);
     } else {
       setSessionActive(true);
     }
   };
+
+  useEffect(() => {
+    if (sessionActive) {
+      const id = setInterval(() => {
+        setTimer((prevTime) => prevTime + 1);
+      }, 1000);
+      setIntervalId(id);
+    } else {
+      clearInterval(intervalId);
+    }
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [sessionActive]);
 
   const fetchExercices = async () => {
     if (!seanceId) return;
@@ -64,30 +85,39 @@ const Exercice = () => {
       flex: 1,
       backgroundColor: colors.background,
     },
-    header: {
+    headerBtnContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      paddingHorizontal: 20,
-      paddingTop: 30,
-      backgroundColor: colors.background,
+      alignSelf: "center",
+
+      marginTop: 30,
+      width: 350,
     },
-    title: {
+    headerBtnTitle: {
+      fontSize: 28,
+      fontFamily: fonts.bold,
+      color: colors.text,
+    },
+    timerText: {
       color: colors.primary,
-      fontSize: 45,
-      fontFamily: fonts.semiBold,
-      letterSpacing: 2,
+      fontFamily: fonts.bold,
+      fontSize: 28,
+      marginTop: 10,
+      textAlign: "left",
+      marginLeft: 20,
     },
-    noSeanceContainer: {
+    button: {
+      backgroundColor: colors.primary,
+      borderRadius: 8,
       alignItems: "center",
-      justifyContent: "center",
+      paddingHorizontal: 10,
+      height: 38,
     },
-    noSeance: {
-      fontSize: 40,
-      fontFamily: fonts.medium,
-      color: colors.placeholder,
-      margin: 20,
-      textAlign: "center",
+    buttonText: {
+      color: colors.background,
+      fontFamily: fonts.bold,
+      fontSize: 28,
     },
     exerciceContainer: {
       alignItems: "center",
@@ -121,42 +151,11 @@ const Exercice = () => {
     icon: {
       color: colors.background,
     },
-    headerBtnTitle: {
-      fontSize: 28,
-      fontFamily: fonts.bold,
-      color: colors.text,
-      // paddingHorizontal: 20,
-    },
-    headerBtn: {
-      height: 2,
-    },
-
-    button: {
-      backgroundColor: colors.primary,
-      borderRadius: 8,
-      alignItems: "center",
-      paddingHorizontal: 10,
-      height: 38,
-    },
-    buttonText: {
-      color: colors.background,
-      fontFamily: fonts.bold,
-      fontSize: 28,
-    },
-    headerBtnContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      alignSelf: "center",
-      width: 350,
-      marginTop: 20,
-      marginBottom: 10,
-    },
   });
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={{ flex: 1, marginTop: 20 }}>
+      <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.headerBtnContainer}>
           <Text style={styles.headerBtnTitle}>Exercice</Text>
           <TouchableOpacity style={styles.button} onPress={toggleSession}>
@@ -165,6 +164,11 @@ const Exercice = () => {
             </Text>
           </TouchableOpacity>
         </View>
+        <Text style={styles.timerText}>
+          {Math.floor(timer / 60)}:
+          {timer % 60 < 10 ? `0${timer % 60}` : timer % 60}
+        </Text>
+
         <ScrollView
           contentContainerStyle={[
             styles.exerciceContainer,
