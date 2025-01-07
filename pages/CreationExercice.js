@@ -16,13 +16,15 @@ import { icons } from "./../assets/icons/icons";
 
 import CustomSwitch from "../components/CustomSwitch";
 import { createExercice } from "../api/Exercice/Exercice";
+import { createDegressif } from "../api/Exercice/Degressif";
 
 const CreationExercice = () => {
   const theme = useTheme();
   const { colors, fonts } = theme;
   const navigation = useNavigation();
-  const route = useRoute(); // Ajoutez cette ligne
+  const route = useRoute();
   const seanceId = route.params?.seanceId;
+
   const [exerciceName, setExerciceName] = useState("");
   const [isTimed, setIsTimed] = useState(false);
   const [requiresPoulie, setRequiresPoulie] = useState(false);
@@ -39,9 +41,12 @@ const CreationExercice = () => {
   const degresiveHeight = useRef(new Animated.Value(0)).current;
   const priseHeight = useRef(new Animated.Value(0)).current;
 
+  const [degressiveWeight, setDegressiveWeight] = useState(weight);
+  const [degressiveReps, setDegressiveReps] = useState(reps);
+
   useEffect(() => {
     Animated.timing(degresiveHeight, {
-      toValue: isDegressive ? 54 : 0,
+      toValue: isDegressive ? 150 : 0,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -60,20 +65,58 @@ const CreationExercice = () => {
   const [weight, setWeight] = useState();
   const [reps, setReps] = useState();
 
+  // const handleSaveExercice = async () => {
+  //   try {
+  //     if (!exercise || !sets || !weight || !reps) {
+  //       Alert.alert("Erreur", "Veuillez remplir tous les champs");
+  //       return;
+  //     }
+
+  //     const exercice = await createExercice(
+  //       seanceId,
+  //       exercise,
+  //       parseInt(sets),
+  //       parseFloat(weight),
+  //       parseInt(reps),
+  //       isDegressive
+  //     );
+
+  //     console.log("Exercice créé avec succès:", exercice);
+  //     navigation.goBack();
+  //   } catch (error) {
+  //     Alert.alert(
+  //       "Erreur",
+  //       "Une erreur est survenue lors de la création de l'exercice"
+  //     );
+  //     console.error(error);
+  //   }
+  // };
+
   const handleSaveExercice = async () => {
     try {
+      // Vérifier si tous les champs requis sont remplis
       if (!exercise || !sets || !weight || !reps) {
         Alert.alert("Erreur", "Veuillez remplir tous les champs");
         return;
       }
 
+      // Vérifier si le mode dégressif est activé et les valeurs dégressives sont présentes
+      if (isDegressive && (!degressiveWeight || !degressiveReps || !sets)) {
+        Alert.alert("Erreur", "Veuillez remplir tous les champs dégressifs");
+        return;
+      }
+
+      // Créer l'exercice
       const exercice = await createExercice(
         seanceId,
         exercise,
         parseInt(sets),
         parseFloat(weight),
         parseInt(reps),
-        isDegressive
+        isDegressive,
+        isDegressive ? parseInt(sets) : null, // Séries dégressives (si activé)
+        isDegressive ? parseFloat(degressiveWeight) : null, // Poids dégressif (si activé)
+        isDegressive ? parseInt(degressiveReps) : null // Répétitions dégressives (si activé)
       );
 
       console.log("Exercice créé avec succès:", exercice);
@@ -86,7 +129,6 @@ const CreationExercice = () => {
       console.error(error);
     }
   };
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -139,6 +181,22 @@ const CreationExercice = () => {
       alignItems: "center",
       marginBottom: 10,
     },
+    rowDegressif: {
+      flexDirection: "column",
+      alignItems: "center",
+      marginBottom: 10,
+      backgroundColor: colors.secondBackground,
+      borderBottomLeftRadius: 5,
+      borderBottomRightRadius: 5,
+      height: 150,
+    },
+    rowDegressifItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      width: "100%",
+      marginBottom: 10,
+    },
     labelContainer: {
       flexDirection: "row",
       alignItems: "center",
@@ -160,10 +218,38 @@ const CreationExercice = () => {
       color: colors.placeholder,
       fontSize: 24,
       fontFamily: fonts.medium,
-      marginLeft: 30,
+      marginLeft: 10,
     },
     value: {
       color: colors.secondary,
+      fontFamily: fonts.medium,
+      fontSize: 30,
+      textAlign: "center",
+      marginRight: 15,
+      width: 60,
+    },
+    labelDegressif: {
+      color: colors.text,
+      fontSize: 24,
+      fontFamily: fonts.medium,
+      marginLeft: 10,
+    },
+    labelDegressifPlaceholder: {
+      color: colors.placeholder,
+      fontSize: 24,
+      fontFamily: fonts.medium,
+      marginLeft: 10,
+    },
+    valueDegressif: {
+      color: colors.secondary,
+      fontFamily: fonts.medium,
+      fontSize: 30,
+      textAlign: "center",
+      marginRight: 15,
+      width: 60,
+    },
+    valueDegressifPlaceholder: {
+      color: colors.placeholder,
       fontFamily: fonts.medium,
       fontSize: 30,
       textAlign: "center",
@@ -278,12 +364,12 @@ const CreationExercice = () => {
           <TouchableOpacity
             style={styles.headerButton}
             onPress={handleSaveExercice}
-            disabled={!exercise?.trim() || !sets || !weight || !reps} 
+            disabled={!exercise?.trim() || !sets || !weight || !reps}
           >
             <Text
               style={[
                 styles.headerButtonText,
-                exercise?.trim() && sets && weight && reps 
+                exercise?.trim() && sets && weight && reps
                   ? styles.headerButtonActive
                   : styles.headerButtonInactive,
               ]}
@@ -383,8 +469,8 @@ const CreationExercice = () => {
                   styles.priseContainer,
                   {
                     borderRadius: 5,
-                    borderBottomLeftRadius: isCustomInputVisible ? 0 : 5,
-                    borderBottomRightRadius: isCustomInputVisible ? 0 : 5,
+                    borderBottomLeftRadius: isDegressive ? 0 : 5,
+                    borderBottomRightRadius: isDegressive ? 0 : 5,
                     marginBottom: 0,
                   },
                 ]}
@@ -404,15 +490,65 @@ const CreationExercice = () => {
                 />
               </View>
               <Animated.View style={{ height: degresiveHeight }}>
-                <TextInput
-                  style={styles.expandableInput}
-                  placeholder="Dégressif"
-                  placeholderTextColor={colors.placeholder}
-                  value={customInputValue}
-                  onChangeText={setCustomInputValue}
-                  keyboardAppearance="dark"
-                  selectionColor={colors.secondary}
-                />
+                <View style={styles.rowDegressif}>
+                  <View style={styles.rowDegressifItem}>
+                    <TextInput
+                      style={styles.labelDegressifPlaceholder}
+                      editable={false}
+                      value="Nombre de set"
+                      placeholderTextColor={colors.placeholder}
+                    />
+                    <TextInput
+                      style={styles.valueDegressifPlaceholder}
+                      value={sets}
+                      onChangeText={setSets}
+                      editable={false}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      placeholderTextColor={colors.placeholder}
+                      keyboardAppearance="dark"
+                      selectionColor={colors.secondary}
+                    />
+                  </View>
+
+                  <View style={styles.rowDegressifItem}>
+                    <TextInput
+                      style={styles.labelDegressif}
+                      editable={false}
+                      value="Poids (kg)"
+                    />
+                    <TextInput
+                      style={styles.valueDegressif}
+                      value={degressiveWeight}
+                      onChangeText={setDegressiveWeight}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      placeholderTextColor={colors.placeholder}
+                      keyboardAppearance="dark"
+                      selectionColor={colors.secondary}
+                    />
+                  </View>
+
+                  <View style={styles.rowDegressifItem}>
+                    <TextInput
+                      style={styles.labelDegressif}
+                      editable={false}
+                      value="Nombre de reps"
+                    />
+                    <TextInput
+                      style={styles.valueDegressif}
+                      value={degressiveReps}
+                      onChangeText={setDegressiveReps}
+                      keyboardType="numeric"
+                      placeholder="0"
+                      placeholderTextColor={colors.placeholder}
+                      keyboardAppearance="dark"
+                      selectionColor={colors.secondary}
+                    />
+                  </View>
+                </View>
+
+                {/* </View> */}
               </Animated.View>
             </View>
             <View style={styles.navigation}>

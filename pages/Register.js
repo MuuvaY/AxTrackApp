@@ -11,6 +11,7 @@ import {
 import { useTheme } from "../context/ThemeContext";
 import { useNavigation } from "@react-navigation/native";
 import { icons } from "./../assets/icons/icons";
+import { registerUser } from "../api/User/register";
 
 const Register = () => {
   const theme = useTheme();
