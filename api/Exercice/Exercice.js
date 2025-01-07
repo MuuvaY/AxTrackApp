@@ -43,3 +43,4 @@ export const createExercice = async (
     throw error;
   }
 };
+

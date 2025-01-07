@@ -16,8 +16,8 @@ const OptionsModal = ({
   onDelete,
   colors,
   fonts,
-  editText = "Modifier",
-  deleteText = "Supprimer",
+  editText = "Modifier la séance",
+  deleteText = "Supprimer la séance",
 }) => {
   return (
     <Modal

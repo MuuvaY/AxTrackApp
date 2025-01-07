@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  Image,
   Alert,
   ScrollView,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native/src";
+
 import { useTheme } from "../context/ThemeContext";
 import { getExercices } from "../api/Exercice/Exercice";
 import { icons } from "./../assets/icons/icons";
@@ -21,8 +22,26 @@ const Exercice = () => {
   const route = useRoute();
 
   const seanceId = route.params?.seanceId;
-
   const [exercices, setExercices] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [sessionActive, setSessionActive] = useState(false);
+
+  const toggleSession = () => {
+    if (sessionActive) {
+      Alert.alert("Confirmation", "Voulez-vous vraiment terminer la séance ?", [
+        {
+          text: "Annuler",
+          style: "cancel",
+        },
+        {
+          text: "Terminer",
+          onPress: () => setSessionActive(false),
+        },
+      ]);
+    } else {
+      setSessionActive(true);
+    }
+  };
 
   const fetchExercices = async () => {
     if (!seanceId) return;
@@ -34,9 +53,11 @@ const Exercice = () => {
     }
   };
 
-  useEffect(() => {
-    fetchExercices();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchExercices();
+    }, [seanceId])
+  );
 
   const styles = StyleSheet.create({
     container: {
@@ -100,36 +121,72 @@ const Exercice = () => {
     icon: {
       color: colors.background,
     },
+    headerBtnTitle: {
+      fontSize: 28,
+      fontFamily: fonts.bold,
+      color: colors.text,
+      // paddingHorizontal: 20,
+    },
+    headerBtn: {
+      height: 2,
+    },
+
+    button: {
+      backgroundColor: colors.primary,
+      borderRadius: 8,
+      alignItems: "center",
+      paddingHorizontal: 10,
+      height: 38,
+    },
+    buttonText: {
+      color: colors.background,
+      fontFamily: fonts.bold,
+      fontSize: 28,
+    },
+    headerBtnContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      alignSelf: "center",
+      width: 350,
+      marginTop: 20,
+      marginBottom: 10,
+    },
   });
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, marginTop: 20 }}>
+        <View style={styles.headerBtnContainer}>
+          <Text style={styles.headerBtnTitle}>Exercice</Text>
+          <TouchableOpacity style={styles.button} onPress={toggleSession}>
+            <Text style={styles.buttonText}>
+              {sessionActive ? "Terminer" : "Commencer"}
+            </Text>
+          </TouchableOpacity>
+        </View>
         <ScrollView
           contentContainerStyle={[
             styles.exerciceContainer,
-            { paddingBottom: 100 },
+            { paddingBottom: 50 },
           ]}
         >
-          {exercices.length > 0 ? (
-            <View>
-              {exercices.map((exercice, index) => (
-                <View key={index}>
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate("ExerciceDetail")}
-                  >
-                    <View style={styles.exercice}>
-                      <Text style={styles.exerciceText}>
-                        {exercice.nom_exercice}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
+          {isLoading ? (
+            <Text style={styles.loadingText}>Chargement des exercices...</Text>
+          ) : exercices.length > 0 ? (
+            exercices.map((exercice, index) => (
+              <TouchableOpacity
+                key={exercice.id || index}
+                style={styles.exercice}
+                onPress={() =>
+                  navigation.navigate("ExerciceDetail", { exercice })
+                }
+              >
+                <Text style={styles.exerciceText}>{exercice.nom_exercice}</Text>
+              </TouchableOpacity>
+            ))
           ) : (
             <View style={styles.noSeanceContainer}>
-              <Image source={require("../assets/img/DumbellCross.webp")} />
               <Text style={styles.noSeance}>
                 Aucun exercice enregistré pour le moment.
               </Text>
@@ -138,7 +195,9 @@ const Exercice = () => {
 
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={() => navigation.navigate("CreationExercice")}
+            onPress={() =>
+              navigation.navigate("CreationExercice", { seanceId })
+            }
           >
             <icons.Plus
               width={30}

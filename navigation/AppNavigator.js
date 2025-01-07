@@ -16,6 +16,8 @@ import { UseSeanceActions } from "../components/UseSeanceActions";
 import DonnerPerso from "../pages/DonnerPerso";
 import { icons } from "./../assets/icons/icons";
 
+import FinSeance from "../pages/FinSeance";
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -47,7 +49,7 @@ const AppNavigator = () => {
           <Stack.Screen
             name="Profile"
             component={Profile}
-            options={{ headerShown: false, headerBackTitleVisible: false }}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="CreationSeance"
@@ -61,6 +63,7 @@ const AppNavigator = () => {
               title: route.params?.seanceNom || "Exercice",
               headerStyle: { backgroundColor: colors.background },
               headerTintColor: colors.placeholder,
+              headerBackTitle: "",
               headerBackTitleVisible: false,
               headerTitleStyle: {
                 fontSize: 30,
@@ -93,7 +96,11 @@ const AppNavigator = () => {
               ),
             })}
           />
-          <Stack.Screen name="ExerciceDetail" component={ExerciceDetail} />
+          <Stack.Screen
+            name="ExerciceDetail"
+            component={ExerciceDetail}
+            options={{ headerBackTitle: "", headerBackTitleVisible: false }}
+          />
           <Stack.Screen
             name="CreationExercice"
             component={CreationExercice}
@@ -102,7 +109,18 @@ const AppNavigator = () => {
           <Stack.Screen
             name="DonnerPerso"
             component={DonnerPerso}
-            options={{ headerBackTitleVisible: false }}
+            options={{
+              headerBackTitle: "",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="FinSeance"
+            component={FinSeance}
+            options={{
+              headerBackTitle: "",
+              headerBackTitleVisible: false,
+            }}
           />
         </>
       ) : (

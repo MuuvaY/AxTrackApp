@@ -11,15 +11,18 @@ import {
   Animated,
 } from "react-native";
 import { useTheme } from "../context/ThemeContext";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { icons } from "./../assets/icons/icons";
 
 import CustomSwitch from "../components/CustomSwitch";
+import { createExercice } from "../api/Exercice/Exercice";
 
 const CreationExercice = () => {
   const theme = useTheme();
   const { colors, fonts } = theme;
   const navigation = useNavigation();
+  const route = useRoute(); // Ajoutez cette ligne
+  const seanceId = route.params?.seanceId;
   const [exerciceName, setExerciceName] = useState("");
   const [isTimed, setIsTimed] = useState(false);
   const [requiresPoulie, setRequiresPoulie] = useState(false);
@@ -30,28 +33,58 @@ const CreationExercice = () => {
   const [isCustomInputVisible, setIsCustomInputVisible] = useState(false);
   const [customInputValue, setCustomInputValue] = useState("");
 
-  const animatedHeight = useRef(new Animated.Value(0)).current;
+  const [isDegressive, setIsDegressive] = useState(false);
+  const [isPriseVisible, setIsPriseVisible] = useState(false);
+
+  const degresiveHeight = useRef(new Animated.Value(0)).current;
+  const priseHeight = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(animatedHeight, {
-      toValue: isCustomInputVisible ? 54 : 0, // Agrandit si activé, rétrécit si désactivé
+    Animated.timing(degresiveHeight, {
+      toValue: isDegressive ? 54 : 0,
       duration: 300,
       useNativeDriver: false,
     }).start();
-  }, [isCustomInputVisible]);
+  }, [isDegressive]);
 
-  const handleToggleSwitch = () => {
-    setIsCustomInputVisible(!isCustomInputVisible);
-  };
+  useEffect(() => {
+    Animated.timing(priseHeight, {
+      toValue: isPriseVisible ? 54 : 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [isPriseVisible]);
 
   const [exercise, setExercise] = useState();
   const [sets, setSets] = useState();
   const [weight, setWeight] = useState();
   const [reps, setReps] = useState();
 
-  const handleSaveExercice = () => {
-    console.log("Exercice enregistré :", exerciceName);
-    navigation.goBack();
+  const handleSaveExercice = async () => {
+    try {
+      if (!exercise || !sets || !weight || !reps) {
+        Alert.alert("Erreur", "Veuillez remplir tous les champs");
+        return;
+      }
+
+      const exercice = await createExercice(
+        seanceId,
+        exercise,
+        parseInt(sets),
+        parseFloat(weight),
+        parseInt(reps),
+        isDegressive
+      );
+
+      console.log("Exercice créé avec succès:", exercice);
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert(
+        "Erreur",
+        "Une erreur est survenue lors de la création de l'exercice"
+      );
+      console.error(error);
+    }
   };
 
   const styles = StyleSheet.create({
@@ -245,12 +278,12 @@ const CreationExercice = () => {
           <TouchableOpacity
             style={styles.headerButton}
             onPress={handleSaveExercice}
-            disabled={!exerciceName.trim()}
+            disabled={!exercise?.trim() || !sets || !weight || !reps} 
           >
             <Text
               style={[
                 styles.headerButtonText,
-                exerciceName.trim()
+                exercise?.trim() && sets && weight && reps 
                   ? styles.headerButtonActive
                   : styles.headerButtonInactive,
               ]}
@@ -364,13 +397,13 @@ const CreationExercice = () => {
                 />
                 <Text style={styles.priseText}>Dégressif</Text>
                 <Switch
-                  value={isCustomInputVisible}
-                  onValueChange={handleToggleSwitch}
+                  value={isDegressive}
+                  onValueChange={setIsDegressive}
                   trackColor={{ false: colors.primary, true: colors.secondary }}
                   thumbColor={colors.text}
                 />
               </View>
-              <Animated.View style={{ height: animatedHeight }}>
+              <Animated.View style={{ height: degresiveHeight }}>
                 <TextInput
                   style={styles.expandableInput}
                   placeholder="Dégressif"
@@ -425,13 +458,13 @@ const CreationExercice = () => {
                 />
                 <Text style={styles.priseText}>Prise</Text>
                 <Switch
-                  value={isCustomInputVisible}
-                  onValueChange={handleToggleSwitch}
+                  value={isPriseVisible}
+                  onValueChange={setIsPriseVisible}
                   trackColor={{ false: colors.primary, true: colors.secondary }}
                   thumbColor={colors.text}
                 />
               </View>
-              <Animated.View style={{ height: animatedHeight }}>
+              <Animated.View style={{ height: priseHeight }}>
                 <TextInput
                   style={styles.expandableInput}
                   placeholder="Type de prise "
