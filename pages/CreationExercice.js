@@ -25,13 +25,18 @@ const CreationExercice = () => {
   const route = useRoute();
   const seanceId = route.params?.seanceId;
 
-  const [exerciceName, setExerciceName] = useState("");
+  const [exercise, setExercise] = useState();
+  const [sets, setSets] = useState();
+  const [weight, setWeight] = useState();
+  const [reps, setReps] = useState();
+
   const [isTimed, setIsTimed] = useState(false);
   const [requiresPoulie, setRequiresPoulie] = useState(false);
   const [requiresBanc, setRequiresBanc] = useState(false);
   const [requiresDossier, setRequiresDossier] = useState(false);
   const [requiresThoracique, setRequiresThoracique] = useState(false);
   const [requiresAssise, setRequiresAssise] = useState(false);
+  const [requiresPrise, setRequiresPrise] = useState(false);
   const [isCustomInputVisible, setIsCustomInputVisible] = useState(false);
   const [customInputValue, setCustomInputValue] = useState("");
 
@@ -43,6 +48,17 @@ const CreationExercice = () => {
 
   const [degressiveWeight, setDegressiveWeight] = useState(weight);
   const [degressiveReps, setDegressiveReps] = useState(reps);
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const validateFields = () => {
+    if (!exercise || !sets || !weight || !reps) {
+      setErrorMessage("Veuillez remplir tous les champs");
+      return false;
+    }
+    setErrorMessage("");
+    return true;
+  };
 
   useEffect(() => {
     Animated.timing(degresiveHeight, {
@@ -59,11 +75,6 @@ const CreationExercice = () => {
       useNativeDriver: false,
     }).start();
   }, [isPriseVisible]);
-
-  const [exercise, setExercise] = useState();
-  const [sets, setSets] = useState();
-  const [weight, setWeight] = useState();
-  const [reps, setReps] = useState();
 
   // const handleSaveExercice = async () => {
   //   try {
@@ -92,21 +103,61 @@ const CreationExercice = () => {
   //   }
   // };
 
+  // const handleSaveExercice = async () => {
+  //   try {
+  //     // Vérifier si tous les champs requis sont remplis
+  //     if (!exercise || !sets || !weight || !reps) {
+  //       Alert.alert("Erreur", "Veuillez remplir tous les champs");
+  //       return;
+  //     }
+
+  //     // Vérifier si le mode dégressif est activé et les valeurs dégressives sont présentes
+  //     if (isDegressive && (!degressiveWeight || !degressiveReps || !sets)) {
+  //       Alert.alert("Erreur", "Veuillez remplir tous les champs dégressifs");
+  //       return;
+  //     }
+
+  //     // Créer l'exercice
+  //     const exercice = await createExercice(
+  //       seanceId,
+  //       exercise,
+  //       parseInt(sets),
+  //       parseFloat(weight),
+  //       parseInt(reps),
+  //       isDegressive,
+  //       isDegressive ? parseInt(sets) : null,
+  //       isDegressive ? parseFloat(degressiveWeight) : null,
+  //       isDegressive ? parseInt(degressiveReps) : null,
+  //       requiresPoulie,
+  //       requiresBanc,
+  //       requiresDossier,
+  //       requiresThoracique,
+  //       requiresAssise
+  //     );
+
+  //     console.log("Exercice créé avec succès:", exercice);
+  //     navigation.goBack();
+  //   } catch (error) {
+  //     Alert.alert(
+  //       "Erreur",
+  //       "Une erreur est survenue lors de la création de l'exercice"
+  //     );
+  //     console.error(error);
+  //   }
+  // };
   const handleSaveExercice = async () => {
+    if (!validateFields()) return;
     try {
-      // Vérifier si tous les champs requis sont remplis
       if (!exercise || !sets || !weight || !reps) {
         Alert.alert("Erreur", "Veuillez remplir tous les champs");
         return;
       }
 
-      // Vérifier si le mode dégressif est activé et les valeurs dégressives sont présentes
       if (isDegressive && (!degressiveWeight || !degressiveReps || !sets)) {
         Alert.alert("Erreur", "Veuillez remplir tous les champs dégressifs");
         return;
       }
 
-      // Créer l'exercice
       const exercice = await createExercice(
         seanceId,
         exercise,
@@ -116,7 +167,13 @@ const CreationExercice = () => {
         isDegressive,
         isDegressive ? parseInt(sets) : null,
         isDegressive ? parseFloat(degressiveWeight) : null,
-        isDegressive ? parseInt(degressiveReps) : null
+        isDegressive ? parseInt(degressiveReps) : null,
+        requiresPoulie,
+        requiresBanc,
+        requiresDossier,
+        requiresThoracique,
+        requiresAssise,
+        requiresPrise
       );
 
       console.log("Exercice créé avec succès:", exercice);
@@ -129,6 +186,7 @@ const CreationExercice = () => {
       console.error(error);
     }
   };
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -272,9 +330,20 @@ const CreationExercice = () => {
       paddingRight: 15,
     },
     supersetContainer: {
+      // flexDirection: "row",
+      // alignItems: "center",
+      // justifyContent: "flex-start",
+      height: 54,
+      width: 355,
+      backgroundColor: colors.secondBackground,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "flex-start",
+      borderRadius: 5,
+    },
+    icon2: {
+      position: "absolute",
+      right: 10,
     },
     textNavigation: {
       fontFamily: fonts.medium,
@@ -553,7 +622,15 @@ const CreationExercice = () => {
             </View>
             <View style={styles.navigation}>
               <TouchableOpacity
-                onPress={() => navigation.navigate("ExerciceDetail")}
+                onPress={() =>
+                  navigation.navigate("Superset", {
+                    exerciceName: exercise,
+                    sets: sets,
+                    poids: weight,
+                    reps: reps,
+                  })
+                }
+                disabled={!exercise?.trim() || !sets || !weight || !reps}
                 style={styles.containerNavigation}
               >
                 <View style={styles.supersetContainer}>
@@ -566,8 +643,8 @@ const CreationExercice = () => {
 
                   <Text style={styles.textNavigation}>Superset</Text>
                   <icons.ChevronRight
-                    width={24}
-                    height={24}
+                    width={30}
+                    height={30}
                     color={colors.placeholder}
                     style={styles.icon2}
                   />
@@ -605,8 +682,8 @@ const CreationExercice = () => {
                   style={styles.expandableInput}
                   placeholder="Type de prise "
                   placeholderTextColor={colors.placeholder}
-                  value={customInputValue}
-                  onChangeText={setCustomInputValue}
+                  value={requiresPrise}
+                  onChangeText={setRequiresPrise}
                   keyboardAppearance="dark"
                   selectionColor={colors.secondary}
                 />

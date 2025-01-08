@@ -9,7 +9,7 @@ import Register from "../pages/Register";
 import Profile from "../pages/Profile";
 import CreationSeance from "../pages/CreationSeance";
 import Exercice from "../pages/Exercice";
-import ExerciceDetail from "../pages/ExerciceDetail";
+import Superset from "../pages/Superset";
 import CreationExercice from "../pages/CreationExercice";
 import OptionsModal from "../components/OptionsModal";
 import { UseSeanceActions } from "../components/UseSeanceActions";
@@ -17,6 +17,7 @@ import DonnerPerso from "../pages/DonnerPerso";
 import { icons } from "./../assets/icons/icons";
 
 import FinSeance from "../pages/FinSeance";
+import ExerciceDetail from "../pages/ExerciceDetail";
 
 const Stack = createStackNavigator();
 
@@ -96,11 +97,7 @@ const AppNavigator = () => {
               ),
             })}
           />
-          <Stack.Screen
-            name="ExerciceDetail"
-            component={ExerciceDetail}
-            options={{ headerBackTitle: "", headerBackTitleVisible: false }}
-          />
+
           <Stack.Screen
             name="CreationExercice"
             component={CreationExercice}
@@ -112,6 +109,36 @@ const AppNavigator = () => {
             options={{
               headerBackTitle: "",
               headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="ExerciceDetail"
+            component={ExerciceDetail}
+            options={{
+              headerStyle: { backgroundColor: colors.background },
+              headerBackTitle: "",
+              headerTintColor: colors.placeholder,
+              headerBackTitleVisible: false,
+              headerTitleStyle: {
+                fontSize: 30,
+                fontFamily: fonts.semiBold,
+                color: colors.primary,
+              },
+            }}
+          />
+          <Stack.Screen
+            name="Superset"
+            component={Superset}
+            options={{
+              headerBackTitle: "",
+              headerBackTitleVisible: false,
+              headerTintColor: colors.placeholder,
+              headerStyle: { backgroundColor: colors.background },
+              headerTitleStyle: {
+                fontSize: 30,
+                fontFamily: fonts.semiBold,
+                color: colors.primary,
+              },
             }}
           />
           <Stack.Screen
