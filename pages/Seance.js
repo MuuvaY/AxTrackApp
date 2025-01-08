@@ -82,6 +82,7 @@ const Seance = () => {
       textAlign: "center",
     },
     noSeanceContainer: {
+      flex: 1,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -105,22 +106,26 @@ const Seance = () => {
       textAlign: "center",
       textAlignVertical: "center",
     },
+    Image: {
+      opacity: 0.5,
+    },
   });
 
   return (
     <View style={styles.container}>
-      <SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Séance</Text>
         </View>
-        <ScrollView
-          contentContainerStyle={[
-            styles.seanceContainer,
-            { paddingBottom: 100 },
-          ]}
-        >
-          {seances.length > 0 ? (
-            seances.map((seance, index) => (
+
+        {seances.length > 0 ? (
+          <ScrollView
+            contentContainerStyle={[
+              styles.seanceContainer,
+              { paddingBottom: 100 },
+            ]}
+          >
+            {seances.map((seance, index) => (
               <View key={seance.id || index} style={styles.exerciceContainer}>
                 <TouchableOpacity
                   onPress={() =>
@@ -142,33 +147,42 @@ const Seance = () => {
                   </View>
                 </TouchableOpacity>
               </View>
-            ))
-          ) : (
-            <View style={styles.noSeanceContainer}>
-              <icons.DumbellCross
-                width={100}
-                height={100}
+            ))}
+            {/* Bouton en dessous des séances */}
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => navigation.navigate("CreationSeance")}
+            >
+              <icons.Plus
+                width={30}
+                height={30}
                 color={colors.primary}
-                style={styles.iconErreur}
+                style={styles.icon}
               />
-              <Image source={require("../assets/img/DumbellCross.webp")} />
-              <Text style={styles.noSeance}>
-                Aucun exercice enregistré pour le moment.
-              </Text>
-            </View>
-          )}
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => navigation.navigate("CreationSeance")}
-          >
-            <icons.Plus
-              width={30}
-              height={30}
-              color={colors.primary}
-              style={styles.icon}
+            </TouchableOpacity>
+          </ScrollView>
+        ) : (
+          <View style={styles.noSeanceContainer}>
+            <Image
+              style={styles.Image}
+              source={require("../assets/img/DumbellCross.webp")}
             />
-          </TouchableOpacity>
-        </ScrollView>
+            <Text style={styles.noSeance}>
+              Aucune séance enregistrée pour le moment.
+            </Text>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => navigation.navigate("CreationSeance")}
+            >
+              <icons.Plus
+                width={30}
+                height={30}
+                color={colors.primary}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       </SafeAreaView>
     </View>
   );

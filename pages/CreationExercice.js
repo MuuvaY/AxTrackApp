@@ -114,9 +114,9 @@ const CreationExercice = () => {
         parseFloat(weight),
         parseInt(reps),
         isDegressive,
-        isDegressive ? parseInt(sets) : null, // Séries dégressives (si activé)
-        isDegressive ? parseFloat(degressiveWeight) : null, // Poids dégressif (si activé)
-        isDegressive ? parseInt(degressiveReps) : null // Répétitions dégressives (si activé)
+        isDegressive ? parseInt(sets) : null,
+        isDegressive ? parseFloat(degressiveWeight) : null,
+        isDegressive ? parseInt(degressiveReps) : null
       );
 
       console.log("Exercice créé avec succès:", exercice);

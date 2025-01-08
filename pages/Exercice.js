@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
+  Image,
 } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native/src";
@@ -90,7 +91,6 @@ const Exercice = () => {
       justifyContent: "space-between",
       alignItems: "center",
       alignSelf: "center",
-
       marginTop: 30,
       width: 350,
     },
@@ -105,7 +105,8 @@ const Exercice = () => {
       fontSize: 28,
       marginTop: 10,
       textAlign: "left",
-      marginLeft: 20,
+      width: 350,
+      alignSelf: "center",
     },
     button: {
       backgroundColor: colors.primary,
@@ -119,9 +120,10 @@ const Exercice = () => {
       fontFamily: fonts.bold,
       fontSize: 28,
     },
-    exerciceContainer: {
+    exerciceListContainer: {
+      // Nouveau conteneur pour la liste d'exercices
+      paddingTop: 10,
       alignItems: "center",
-      justifyContent: "center",
     },
     exercice: {
       backgroundColor: colors.secondary,
@@ -138,7 +140,6 @@ const Exercice = () => {
       fontSize: 32,
       textTransform: "uppercase",
     },
-
     buttonContainer: {
       marginTop: 20,
       backgroundColor: colors.primary,
@@ -151,66 +152,104 @@ const Exercice = () => {
     icon: {
       color: colors.background,
     },
+    noExerciceContainer: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    noExercice: {
+      fontSize: 40,
+      fontFamily: fonts.medium,
+      color: colors.placeholder,
+      margin: 20,
+      textAlign: "center",
+    },
+    image: {
+      opacity: 0.5,
+    },
+    contentContainer: {
+      flex: 1,
+    },
   });
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.headerBtnContainer}>
-          <Text style={styles.headerBtnTitle}>Exercice</Text>
-          <TouchableOpacity style={styles.button} onPress={toggleSession}>
-            <Text style={styles.buttonText}>
-              {sessionActive ? "Terminer" : "Commencer"}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.timerText}>
-          {Math.floor(timer / 60)}:
-          {timer % 60 < 10 ? `0${timer % 60}` : timer % 60}
-        </Text>
-
-        <ScrollView
-          contentContainerStyle={[
-            styles.exerciceContainer,
-            { paddingBottom: 50 },
-          ]}
-        >
+        <View style={styles.contentContainer}>
           {isLoading ? (
-            <Text style={styles.loadingText}>Chargement des exercices...</Text>
+            <View style={styles.noExerciceContainer}>
+              <Text>Chargement des exercices...</Text>
+            </View>
           ) : exercices.length > 0 ? (
-            exercices.map((exercice, index) => (
+            <ScrollView
+              contentContainerStyle={styles.exerciceListContainer}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={styles.headerBtnContainer}>
+                <Text style={styles.headerBtnTitle}>Exercice</Text>
+                <TouchableOpacity style={styles.button} onPress={toggleSession}>
+                  <Text style={styles.buttonText}>
+                    {sessionActive ? "Terminer" : "Commencer"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.timerText}>
+                {Math.floor(timer / 60)}:
+                {timer % 60 < 10 ? `0${timer % 60}` : timer % 60}
+              </Text>
+              {exercices.map((exercice, index) => (
+                <TouchableOpacity
+                  key={exercice.id || index}
+                  style={styles.exercice}
+                  onPress={() =>
+                    navigation.navigate("ExerciceDetail", { exercice })
+                  }
+                >
+                  <Text style={styles.exerciceText}>
+                    {exercice.nom_exercice}
+                  </Text>
+                </TouchableOpacity>
+              ))}
               <TouchableOpacity
-                key={exercice.id || index}
-                style={styles.exercice}
+                style={styles.buttonContainer}
                 onPress={() =>
-                  navigation.navigate("ExerciceDetail", { exercice })
+                  navigation.navigate("CreationExercice", { seanceId })
                 }
               >
-                <Text style={styles.exerciceText}>{exercice.nom_exercice}</Text>
+                <icons.Plus
+                  width={30}
+                  height={30}
+                  color={colors.primary}
+                  style={styles.icon}
+                />
               </TouchableOpacity>
-            ))
+            </ScrollView>
           ) : (
-            <View style={styles.noSeanceContainer}>
-              <Text style={styles.noSeance}>
+            <View style={styles.noExerciceContainer}>
+              <Image
+                style={styles.image}
+                source={require("../assets/img/DumbellCross.webp")}
+              />
+              <Text style={styles.noExercice}>
                 Aucun exercice enregistré pour le moment.
               </Text>
+              <TouchableOpacity
+                style={styles.buttonContainer}
+                onPress={() =>
+                  navigation.navigate("CreationExercice", { seanceId })
+                }
+              >
+                <icons.Plus
+                  width={30}
+                  height={30}
+                  color={colors.primary}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
             </View>
           )}
-
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() =>
-              navigation.navigate("CreationExercice", { seanceId })
-            }
-          >
-            <icons.Plus
-              width={30}
-              height={30}
-              color={colors.primary}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </View>
   );
