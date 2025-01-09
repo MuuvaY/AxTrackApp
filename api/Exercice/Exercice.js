@@ -95,7 +95,8 @@ export const createExercice = async (
   requires_banc,
   requires_dossier,
   requires_thoracique,
-  reglage_prise
+  reglage_prise,
+  supersets
 ) => {
   const exerciceData = {
     nom_exercice: nomExercice,
@@ -103,9 +104,10 @@ export const createExercice = async (
     poids: poids,
     repetitions: repetitions,
     degressif_active: degressifActive,
+    supersets: supersets || null,
     series_degressif: degressifActive ? seriesDegressif : null,
     poids_degressif: degressifActive ? poidsDegressif : null,
-    repetitions_degressif: degressifActive ? repetitionsDegressif : null,
+    repetitions_degressif: degressifActive ? repetitions_degressif : null,
     reglage_assise: requires_assise,
     reglage_poulie: requires_poulie,
     reglage_banc: requires_banc,

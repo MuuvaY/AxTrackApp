@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   Text,
   View,
@@ -9,6 +9,7 @@ import {
   TextInput,
   Switch,
   Animated,
+  Alert,
 } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -51,6 +52,8 @@ const CreationExercice = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [supersetData, setSupersetData] = useState(null);
+
   const validateFields = () => {
     if (!exercise || !sets || !weight || !reps) {
       setErrorMessage("Veuillez remplir tous les champs");
@@ -75,6 +78,11 @@ const CreationExercice = () => {
       useNativeDriver: false,
     }).start();
   }, [isPriseVisible]);
+
+  const handleSupersetData = useCallback((data) => {
+    setSupersetData(data);
+    Alert.alert("Superset", "Les données du superset ont été enregistrées !");
+  }, []);
 
   // const handleSaveExercice = async () => {
   //   try {
@@ -145,47 +153,104 @@ const CreationExercice = () => {
   //     console.error(error);
   //   }
   // };
+
   const handleSaveExercice = async () => {
     if (!validateFields()) return;
+
     try {
-      if (!exercise || !sets || !weight || !reps) {
-        Alert.alert("Erreur", "Veuillez remplir tous les champs");
-        return;
-      }
+      const exerciceData = {
+        nomExercice: exercise,
+        sets: parseInt(sets),
+        poids: parseFloat(weight),
+        repetitions: parseInt(reps),
+        degressifActive: isDegressive,
+        seriesDegressif: isDegressive ? parseInt(sets) : null,
+        poidsDegressif: isDegressive ? parseFloat(degressiveWeight) : null,
+        repetitions_degressif: isDegressive ? parseInt(degressiveReps) : null,
+        requires_assise: requiresAssise,
+        requires_poulie: requiresPoulie,
+        requires_banc: requiresBanc,
+        requires_dossier: requiresDossier,
+        requires_thoracique: requiresThoracique,
+        reglage_prise: requiresPrise,
+        superset: supersetData,
+      };
 
-      if (isDegressive && (!degressiveWeight || !degressiveReps || !sets)) {
-        Alert.alert("Erreur", "Veuillez remplir tous les champs dégressifs");
-        return;
-      }
-
+      // Créer l'exercice
       const exercice = await createExercice(
         seanceId,
-        exercise,
-        parseInt(sets),
-        parseFloat(weight),
-        parseInt(reps),
-        isDegressive,
-        isDegressive ? parseInt(sets) : null,
-        isDegressive ? parseFloat(degressiveWeight) : null,
-        isDegressive ? parseInt(degressiveReps) : null,
-        requiresPoulie,
-        requiresBanc,
-        requiresDossier,
-        requiresThoracique,
-        requiresAssise,
-        requiresPrise
+        exerciceData.nomExercice,
+        exerciceData.sets,
+        exerciceData.poids,
+        exerciceData.repetitions,
+        exerciceData.degressifActive,
+        exerciceData.seriesDegressif,
+        exerciceData.poidsDegressif,
+        exerciceData.repetitions_degressif,
+        exerciceData.requires_assise,
+        exerciceData.requires_poulie,
+        exerciceData.requires_banc,
+        exerciceData.requires_dossier,
+        exerciceData.requires_thoracique,
+        exerciceData.reglage_prise,
+        exerciceData.superset
       );
 
       console.log("Exercice créé avec succès:", exercice);
       navigation.goBack();
     } catch (error) {
+      console.error(
+        "Erreur lors de la création de l'exercice:",
+        error.response?.data || error.message
+      );
       Alert.alert(
         "Erreur",
-        "Une erreur est survenue lors de la création de l'exercice"
+        "Une erreur est survenue lors de la création de l'exercice."
       );
-      console.error(error);
     }
   };
+
+  // const handleSaveExercice = async () => {
+  //   if (!validateFields()) return;
+  //   try {
+  //     if (!exercise || !sets || !weight || !reps) {
+  //       Alert.alert("Erreur", "Veuillez remplir tous les champs");
+  //       return;
+  //     }
+
+  //     if (isDegressive && (!degressiveWeight || !degressiveReps || !sets)) {
+  //       Alert.alert("Erreur", "Veuillez remplir tous les champs dégressifs");
+  //       return;
+  //     }
+
+  //     const exercice = await createExercice(
+  //       seanceId,
+  //       exercise,
+  //       parseInt(sets),
+  //       parseFloat(weight),
+  //       parseInt(reps),
+  //       isDegressive,
+  //       isDegressive ? parseInt(sets) : null,
+  //       isDegressive ? parseFloat(degressiveWeight) : null,
+  //       isDegressive ? parseInt(degressiveReps) : null,
+  //       requiresPoulie,
+  //       requiresBanc,
+  //       requiresDossier,
+  //       requiresThoracique,
+  //       requiresAssise,
+  //       requiresPrise
+  //     );
+
+  //     console.log("Exercice créé avec succès:", exercice);
+  //     navigation.goBack();
+  //   } catch (error) {
+  //     Alert.alert(
+  //       "Erreur",
+  //       "Une erreur est survenue lors de la création de l'exercice"
+  //     );
+  //     console.error(error);
+  //   }
+  // };
 
   const styles = StyleSheet.create({
     container: {
@@ -628,9 +693,10 @@ const CreationExercice = () => {
                     sets: sets,
                     poids: weight,
                     reps: reps,
+                    onSave: handleSupersetData,
                   })
                 }
-                disabled={!exercise?.trim() || !sets || !weight || !reps}
+                // disabled={!exercise?.trim() || !sets || !weight || !reps}
                 style={styles.containerNavigation}
               >
                 <View style={styles.supersetContainer}>

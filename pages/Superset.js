@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,17 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { icons } from "./../assets/icons/icons";
 import { useTheme } from "../context/ThemeContext";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 
 const Superset = () => {
   const theme = useTheme();
   const { colors, fonts } = theme;
   const route = useRoute();
+  const navigation = useNavigation();
 
   const exerciceName = route.params?.exerciceName || "";
   const sets = route.params?.sets || 0;
@@ -39,6 +41,51 @@ const Superset = () => {
     newExercises[index][field] = value;
     setExercises(newExercises);
   };
+
+  const onSave = route.params?.onSave;
+
+  const saveExercises = useCallback(() => {
+    if (!validateExercises()) {
+      Alert.alert(
+        "Erreur",
+        "Veuillez remplir tous les champs pour chaque exercice"
+      );
+      return;
+    }
+
+    if (onSave) {
+      onSave(exercises);
+    }
+    navigation.goBack();
+  }, [onSave, exercises, navigation]);
+
+  const validateExercises = () => {
+    for (let i = 0; i < exercises.length; i++) {
+      const { name, sets, poids, reps } = exercises[i];
+      if (!name?.trim() || !sets || !poids || !reps) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={saveExercises} style={{ paddingRight: 15 }}>
+          <Text
+            style={{
+              color: colors.primary,
+              fontSize: 18,
+              fontFamily: fonts.medium,
+            }}
+          >
+            OK
+          </Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, saveExercises, colors.primary, fonts.medium]);
 
   const styles = StyleSheet.create({
     container: {
