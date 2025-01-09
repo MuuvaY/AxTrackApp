@@ -18,22 +18,17 @@ const Superset = () => {
   const route = useRoute();
   const navigation = useNavigation();
 
-  const exerciceName = route.params?.exerciceName || "";
-  const sets = route.params?.sets || 0;
-  const poids = route.params?.poids || 0;
-  const reps = route.params?.reps || 0;
+  const baseExercise = {
+    name: route.params?.exerciceName || "",
+    sets: route.params?.sets || 0,
+    poids: route.params?.poids || 0,
+    reps: route.params?.reps || 0,
+  };
 
-  const [exercises, setExercises] = useState([
-    {
-      name: exerciceName,
-      sets: sets,
-      poids: poids,
-      reps: reps,
-    },
-  ]);
+  const [exercises, setExercises] = useState([]);
 
   const addExercise = () => {
-    setExercises([...exercises, { name: "", sets: 0, poids: 0, reps: 0 }]);
+    setExercises([...exercises, { name: "", sets: "", poids: "", reps: "" }]);
   };
 
   const updateExercise = (index, field, value) => {
@@ -60,8 +55,8 @@ const Superset = () => {
   }, [onSave, exercises, navigation]);
 
   const validateExercises = () => {
-    for (let i = 0; i < exercises.length; i++) {
-      const { name, sets, poids, reps } = exercises[i];
+    for (let exercise of exercises) {
+      const { name, sets, poids, reps } = exercise;
       if (!name?.trim() || !sets || !poids || !reps) {
         return false;
       }
@@ -72,16 +67,8 @@ const Superset = () => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity onPress={saveExercises} style={{ paddingRight: 15 }}>
-          <Text
-            style={{
-              color: colors.primary,
-              fontSize: 18,
-              fontFamily: fonts.medium,
-            }}
-          >
-            OK
-          </Text>
+        <TouchableOpacity onPress={saveExercises} style={{ paddingRight: 25 }}>
+          <Text style={styles.headerBtn}>OK</Text>
         </TouchableOpacity>
       ),
     });
@@ -145,8 +132,13 @@ const Superset = () => {
       marginTop: 20,
     },
     addButtonText: {
-      color: "white",
+      color: colors.background,
       fontSize: 20,
+      fontFamily: fonts.medium,
+    },
+    headerBtn: {
+      color: colors.secondary,
+      fontSize: 30,
       fontFamily: fonts.medium,
     },
   });
@@ -159,6 +151,50 @@ const Superset = () => {
           { paddingBottom: 100 },
         ]}
       >
+        <View style={styles.containerInput}>
+          <View style={styles.labelContainer}>
+            <icons.Weight
+              width={24}
+              height={24}
+              color={colors.primary}
+              style={styles.icon}
+            />
+            <TextInput
+              style={[styles.titleInput, { opacity: 0.5 }]}
+              value={baseExercise.name}
+              placeholder="Nom de l'exercice"
+              editable={false}
+            />
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Nombre de set</Text>
+            <TextInput
+              style={styles.value}
+              value={String(baseExercise.sets)}
+              editable={false}
+            />
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Poids (kg)</Text>
+            <TextInput
+              style={styles.value}
+              value={String(baseExercise.poids)}
+              editable={false}
+            />
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Nombre de reps</Text>
+            <TextInput
+              style={styles.value}
+              value={String(baseExercise.reps)}
+              editable={false}
+            />
+          </View>
+        </View>
+        {/* Afficher les supersets ajoutés */}
         {exercises.map((exercise, index) => (
           <View key={index} style={styles.containerInput}>
             <View style={styles.labelContainer}>
@@ -169,13 +205,12 @@ const Superset = () => {
                 style={styles.icon}
               />
               <TextInput
-                style={[styles.titleInput, index === 0 && { opacity: 0.5 }]}
-                placeholder="Nom de l'exercice"
+                style={styles.titleInput}
+                placeholder={`Superset ${index + 1}`} // Modification ici
                 placeholderTextColor={colors.placeholder}
                 keyboardAppearance="dark"
                 selectionColor={colors.secondary}
                 value={exercise.name}
-                editable={index !== 0}
                 onChangeText={(text) => updateExercise(index, "name", text)}
               />
             </View>
@@ -190,7 +225,6 @@ const Superset = () => {
                 keyboardAppearance="dark"
                 selectionColor={colors.secondary}
                 value={String(exercise.sets)}
-                editable={index !== 0}
                 onChangeText={(text) =>
                   updateExercise(index, "sets", parseInt(text) || 0)
                 }
@@ -206,7 +240,6 @@ const Superset = () => {
                 placeholderTextColor={colors.placeholder}
                 keyboardAppearance="dark"
                 selectionColor={colors.secondary}
-                editable={index !== 0}
                 value={String(exercise.poids)}
                 onChangeText={(text) =>
                   updateExercise(index, "poids", parseInt(text) || 0)
@@ -223,7 +256,6 @@ const Superset = () => {
                 placeholderTextColor={colors.placeholder}
                 keyboardAppearance="dark"
                 selectionColor={colors.secondary}
-                editable={index !== 0}
                 value={String(exercise.reps)}
                 onChangeText={(text) =>
                   updateExercise(index, "reps", parseInt(text) || 0)
@@ -232,7 +264,6 @@ const Superset = () => {
             </View>
           </View>
         ))}
-
         <TouchableOpacity onPress={addExercise} style={styles.addButton}>
           <Text style={styles.addButtonText}>Ajouter un exercice</Text>
         </TouchableOpacity>
