@@ -206,7 +206,7 @@ const Superset = () => {
               />
               <TextInput
                 style={styles.titleInput}
-                placeholder={`Superset ${index + 1}`} // Modification ici
+                placeholder={`Superset ${index + 1}`}
                 placeholderTextColor={colors.placeholder}
                 keyboardAppearance="dark"
                 selectionColor={colors.secondary}

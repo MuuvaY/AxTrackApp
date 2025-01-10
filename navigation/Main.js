@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./AppNavigator";
 import { useAuth } from "../context/AuthContext";
 import { setupInterceptor } from "../api/ApiManager";
+import { ChronometreProvider } from "../context/ChronometreContext";
 
 const Main = () => {
   const { signOut } = useAuth();
@@ -12,9 +13,11 @@ const Main = () => {
   }, [signOut]);
 
   return (
-    <NavigationContainer>
-      <AppNavigator />
-    </NavigationContainer>
+    <ChronometreProvider>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+    </ChronometreProvider>
   );
 };
 

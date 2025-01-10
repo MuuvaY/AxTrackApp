@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import { useRoute } from "@react-navigation/native/src";
 import { useTheme } from "../context/ThemeContext";
 import { getExercices } from "../api/Exercice/Exercice";
 import { icons } from "./../assets/icons/icons";
+import { useChronometre } from "../context/ChronometreContext";
 
 const Exercice = () => {
   const theme = useTheme();
@@ -26,8 +27,10 @@ const Exercice = () => {
   const [exercices, setExercices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [sessionActive, setSessionActive] = useState(false);
-  const [timer, setTimer] = useState(0);
-  const [intervalId, setIntervalId] = useState(null);
+  // const [timer, setTimer] = useState(0);
+  // const [intervalId, setIntervalId] = useState(null);
+  const { timer, startTimer, resetTimer } = useChronometre();
+  const intervalId = useRef(null);
 
   const toggleSession = () => {
     if (sessionActive) {
@@ -41,8 +44,9 @@ const Exercice = () => {
           onPress: () => {
             setSessionActive(false);
             clearInterval(intervalId);
-            setTimer(0);
+            const id = setInterval(startTimer, 1000);
             navigation.navigate("FinSeance");
+            setIntervalId(id);
           },
         },
       ]);
@@ -53,17 +57,18 @@ const Exercice = () => {
 
   useEffect(() => {
     if (sessionActive) {
-      const id = setInterval(() => {
-        setTimer((prevTime) => prevTime + 1);
+      // Démarrer un nouvel intervalle si la session est active
+      intervalId.current = setInterval(() => {
+        startTimer();
       }, 1000);
-      setIntervalId(id);
     } else {
-      clearInterval(intervalId);
+      clearInterval(intervalId.current); // Arrêter l'intervalle quand la session est terminée
     }
+
     return () => {
-      clearInterval(intervalId);
+      clearInterval(intervalId.current); // Nettoyage lors du démontage du composant
     };
-  }, [sessionActive]);
+  }, [sessionActive, startTimer]);
 
   const fetchExercices = async () => {
     if (!seanceId) return;
@@ -203,7 +208,7 @@ const Exercice = () => {
                   key={exercice.id || index}
                   style={styles.exercice}
                   onPress={() =>
-                    navigation.navigate("ExerciceDetail", { exercice })
+                    navigation.navigate("ExerciceDetail", { exercice, timer })
                   }
                 >
                   <Text style={styles.exerciceText}>

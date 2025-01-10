@@ -115,9 +115,16 @@ const AppNavigator = () => {
             name="ExerciceDetail"
             component={ExerciceDetail}
             options={{
-              headerStyle: { backgroundColor: colors.background },
+              headerStyle: { backgroundColor: colors.secondary },
+              headerStyle: {
+                backgroundColor: colors.secondary,
+                elevation: 0,
+                shadowOpacity: 0,
+              },
+              headerShadowVisible: false,
+              headerTitle: "",
               headerBackTitle: "",
-              headerTintColor: colors.placeholder,
+              headerTintColor: colors.background,
               headerBackTitleVisible: false,
               headerTitleStyle: {
                 fontSize: 30,

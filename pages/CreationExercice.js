@@ -54,6 +54,15 @@ const CreationExercice = () => {
 
   const [supersetData, setSupersetData] = useState(null);
 
+  const formatWeight = (value) => {
+    // Si la valeur est un entier, on ne garde pas les décimales
+    if (value) {
+      let number = parseFloat(value);
+      return number % 1 === 0 ? number.toString() : number.toFixed(2);
+    }
+    return "";
+  };
+
   const validateFields = () => {
     if (!exercise || !sets || !weight || !reps) {
       setErrorMessage("Veuillez remplir tous les champs");
@@ -566,7 +575,7 @@ const CreationExercice = () => {
                 />
                 <TextInput
                   style={styles.value}
-                  value={weight}
+                  value={formatWeight(weight)}
                   onChangeText={setWeight}
                   keyboardType="numeric"
                   placeholder="0"
