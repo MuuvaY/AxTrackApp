@@ -15,6 +15,7 @@ import { useRoute } from "@react-navigation/native/src";
 import { useTheme } from "../context/ThemeContext";
 import { getExercices } from "../api/Exercice/Exercice";
 import { getDegressifs } from "../api/Exercice/Degressif";
+import { getSupersets } from "../api/Exercice/Superset";
 import { icons } from "./../assets/icons/icons";
 import { useChronometre } from "../context/ChronometreContext";
 
@@ -27,6 +28,7 @@ const Exercice = () => {
   const seanceId = route.params?.seanceId;
   const [exercices, setExercices] = useState([]);
   const [degressifs, setDegressifs] = useState([]);
+  const [supersets, setSupersets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [sessionActive, setSessionActive] = useState(false);
   // const [timer, setTimer] = useState(0);
@@ -71,52 +73,71 @@ const Exercice = () => {
     };
   }, [sessionActive, startTimer]);
 
-  // const fetchExercices = async () => {
-  //   if (!seanceId) return;
-  //   try {
-  //     const data = await getExercices(seanceId);
-  //     setExercices(data);
-  //   } catch (err) {
-  //     Alert.alert("Erreur", "Impossible de récupérer les exercices.");
-  //   }
-  // };
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     fetchExercices();
-  //   }, [seanceId])
-  // );
   const fetchData = async () => {
     if (!seanceId) return;
     try {
       const exercicesData = await getExercices(seanceId);
       setExercices(exercicesData);
 
-      const degressifsData = await Promise.all(
-        exercicesData.map(async (exercice) => {
-          try {
-            const exerciceId = exercice.exercice_id;
-            const degressifsForExercice = await getDegressifs(exerciceId);
+      const [degressifsData, supersetsData] = await Promise.all([
+        Promise.all(
+          exercicesData.map(async (exercice) => {
+            try {
+              const exerciceId = exercice.exercice_id;
+              const degressifsForExercice = await getDegressifs(exerciceId);
 
-            return {
-              exerciceId: exerciceId,
-              degressifs: degressifsForExercice.map((deg) => ({
-                poids_degressifs: deg.poids_degressif,
-                reps_degressifs: deg.repetitions_degressif,
-                degressif_id: deg.degressif_id,
-              })),
-            };
-          } catch (error) {
-            console.error(`Erreur pour l'exercice ${exerciceId}:`, error);
-            return {
-              exerciceId: exercice.exercice_id,
-              degressifs: [],
-            };
-          }
-        })
-      );
+              return {
+                exerciceId: exerciceId,
+                degressifs: degressifsForExercice.map((deg) => ({
+                  poids_degressifs: deg.poids_degressif,
+                  reps_degressifs: deg.repetitions_degressif,
+                  degressif_id: deg.degressif_id,
+                })),
+              };
+            } catch (error) {
+              console.error(`Erreur pour l'exercice ${exerciceId}:`, error);
+              return {
+                exerciceId: exercice.exercice_id,
+                degressifs: [],
+              };
+            }
+          })
+        ),
+        Promise.all(
+          exercicesData.map(async (exercice) => {
+            try {
+              const exerciceId = exercice.exercice_id;
+              const supersetsForExercice = await getSupersets(
+                seanceId,
+                exerciceId
+              );
+
+              return {
+                exerciceId: exerciceId,
+                supersets: supersetsForExercice.map((superset) => ({
+                  superset_nom: superset.superset_nom,
+                  superset_poids: superset.superset_poids,
+                  superset_reps: superset.superset_reps,
+                  superset_sets: superset.superset_sets,
+                  superset_id: superset.superset_id,
+                })),
+              };
+            } catch (error) {
+              console.error(
+                `Erreur supersets pour l'exercice ${exerciceId}:`,
+                error
+              );
+              return {
+                exerciceId: exercice.exercice_id,
+                supersets: [],
+              };
+            }
+          })
+        ),
+      ]);
 
       setDegressifs(degressifsData);
+      setSupersets(supersetsData);
     } catch (err) {
       console.error("Erreur complète:", err);
       Alert.alert("Erreur", "Impossible de récupérer les données.");
@@ -249,15 +270,32 @@ const Exercice = () => {
                 <TouchableOpacity
                   key={exercice.id || index}
                   style={styles.exercice}
+                  // onPress={() => {
+                  //   const exerciceDegressifs =
+                  //     degressifs.find(
+                  //       (d) => d.exerciceId === exercice.exercice_id
+                  //     )?.degressifs || [];
+                  //   navigation.navigate("ExerciceDetail", {
+                  //     exercice,
+                  //     timer,
+                  //     degressifs: exerciceDegressifs,
+                  //   });
+                  // }}
                   onPress={() => {
                     const exerciceDegressifs =
                       degressifs.find(
                         (d) => d.exerciceId === exercice.exercice_id
                       )?.degressifs || [];
+                    const exerciceSupersets =
+                      supersets.find(
+                        (s) => s.exerciceId === exercice.exercice_id
+                      )?.supersets || [];
+
                     navigation.navigate("ExerciceDetail", {
                       exercice,
                       timer,
                       degressifs: exerciceDegressifs,
+                      supersets: exerciceSupersets,
                     });
                   }}
                 >

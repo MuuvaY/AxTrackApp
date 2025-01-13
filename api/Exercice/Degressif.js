@@ -5,15 +5,13 @@ export const getDegressifs = async (exerciceId) => {
     const response = await ApiManager.get(`/exercice/${exerciceId}/degressifs`);
     return response.data;
   } catch (error) {
-    // Si l'erreur indique que les dégressifs ne sont pas activés, on retourne un tableau vide
     if (
       error.response?.data?.message?.includes("dégressifs ne sont pas activés")
     ) {
       return [];
     }
-    // Pour les autres types d'erreurs, on les propage
     console.error(
-      "Erreur lors de la récupération des exercices:",
+      "Erreur lors de la récupération des degressifs:",
       error.response?.data || error.message
     );
     throw error;

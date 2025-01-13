@@ -23,7 +23,7 @@ const ExerciceDetail = () => {
   const { colors, fonts } = theme;
   const route = useRoute();
 
-  const { exercice, degressifs } = route.params || {};
+  const { exercice, degressifs, supersets } = route.params || {};
   const [formattedDate, setFormattedDate] = useState(null);
   const { timer } = useChronometre();
 
@@ -32,6 +32,7 @@ const ExerciceDetail = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [degressifsInputValues, setDegressifsInputValues] = useState({});
   const [localDegressifs, setLocalDegressifs] = useState(degressifs || []);
+  const [localSupersets, setLocalSupersets] = useState(supersets || []);
 
   useEffect(() => {
     if (degressifs) {
@@ -39,40 +40,11 @@ const ExerciceDetail = () => {
     }
   }, [degressifs]);
 
-  // const debouncedUpdate = useMemo(
-  //   () =>
-  //     debounce(async (updatedData) => {
-  //       try {
-  //         setIsUpdating(true);
-
-  //         // S'assurer que les dégressifs sont correctement formatés
-  //         const formattedDegressifs = updatedData.degressifs.map(
-  //           (degressif, index) => ({
-  //             series_degressif: index + 1,
-  //             poids_degressifs: degressif.poids_degressifs || "0",
-  //             reps_degressifs: degressif.reps_degressifs || "0",
-  //           })
-  //         );
-
-  //         const dataToUpdate = {
-  //           ...updatedData,
-  //           degressifs: formattedDegressifs,
-  //         };
-
-  //         console.log("Données envoyées à l'API:", dataToUpdate);
-  //         await updateExercice(
-  //           exercice.seance_id,
-  //           exercice.exercice_id,
-  //           dataToUpdate
-  //         );
-  //       } catch (error) {
-  //         console.error("Erreur lors de la mise à jour:", error);
-  //       } finally {
-  //         setIsUpdating(false);
-  //       }
-  //     }, 300),
-  //   [exercice]
-  // );
+  useEffect(() => {
+    if (supersets) {
+      setLocalSupersets(supersets);
+    }
+  }, [supersets]);
 
   const debouncedUpdate = useMemo(
     () =>
@@ -80,7 +52,6 @@ const ExerciceDetail = () => {
         try {
           setIsUpdating(true);
 
-          // Ajouter une vérification
           const formattedDegressifs = updatedData.degressifs
             ? updatedData.degressifs.map((degressif, index) => ({
                 series_degressif: index + 1,
@@ -89,9 +60,20 @@ const ExerciceDetail = () => {
               }))
             : [];
 
+          const formattedSupersets = updatedData.supersets
+            ? updatedData.supersets.map((superset) => ({
+                superset_id: superset.superset_id,
+                superset_nom: superset.superset_nom,
+                superset_poids: superset.superset_poids,
+                superset_reps: superset.superset_reps,
+                superset_sets: superset.superset_sets,
+              }))
+            : [];
+
           const dataToUpdate = {
             ...updatedData,
             degressifs: formattedDegressifs,
+            supersets: formattedSupersets,
           };
 
           console.log("Données envoyées à l'API:", dataToUpdate);
@@ -110,10 +92,12 @@ const ExerciceDetail = () => {
   );
   useEffect(() => {
     console.log("Exercice reçu:", exercice, degressifs);
+    console.log("Supersets:", route.params?.supersets);
     if (exercice?.date_ajout) {
       const formatted = format(
         new Date(exercice.date_ajout),
-        "dd/MM/yyyy 'à' HH:mm"
+        "dd/MM/yyyy 'à' HH:mm",
+        { timeZone: "UTC" }
       );
       setFormattedDate(formatted);
     }
@@ -134,9 +118,7 @@ const ExerciceDetail = () => {
 
   const formatPoids = (poids) => {
     if (!poids) return "";
-    // Convertit le point en virgule pour l'affichage
     const displayValue = String(poids).replace(".", ",");
-    // Supprime les zéros inutiles après la virgule
     return displayValue.replace(/,0+$/, "");
   };
 
@@ -170,6 +152,7 @@ const ExerciceDetail = () => {
 
     debouncedUpdate(updatedData);
   };
+
   const handleRepetitionsChange = (index, value) => {
     if (value.length > 5) return;
 
@@ -261,6 +244,56 @@ const ExerciceDetail = () => {
 
     debouncedUpdate(updatedData);
   };
+
+  const handleSupersetPoidsChange = (supersetId, value) => {
+    const sanitizedValue = value.replace(/[^0-9.,]/g, "");
+    const dbValue = sanitizedValue.replace(",", ".");
+
+    const updatedSupersets = localSupersets.map((superset) =>
+      superset.superset_id === supersetId
+        ? {
+            ...superset,
+            superset_poids: dbValue || 0,
+          }
+        : superset
+    );
+
+    setLocalSupersets(updatedSupersets);
+
+    console.log("Superset mis à jour:", updatedSupersets);
+
+    const updatedData = {
+      exercice_id: exercice.exercice_id,
+      seance_id: exercice.seance_id,
+      supersets: updatedSupersets,
+    };
+
+    console.log("Données envoyées à l'API pour superset:", updatedData);
+
+    debouncedUpdate(updatedData);
+  };
+
+  const handleSupersetRepsChange = (supersetId, value) => {
+    const updatedSupersets = localSupersets.map((superset) =>
+      superset.superset_id === supersetId
+        ? {
+            ...superset,
+            superset_reps: parseInt(value) || 0,
+          }
+        : superset
+    );
+
+    setLocalSupersets(updatedSupersets);
+
+    const updatedData = {
+      exercice_id: exercice.exercice_id,
+      seance_id: exercice.seance_id,
+      supersets: updatedSupersets,
+    };
+
+    debouncedUpdate(updatedData);
+  };
+
   const getTextColor = (index) => {
     const firstUncheckedIndex = checkedSets.findIndex((checked) => !checked);
     if (index < firstUncheckedIndex) {
@@ -409,8 +442,13 @@ const ExerciceDetail = () => {
     test: {
       height: "100%",
     },
-    bonjour: {
-      // marginBottom: 20,
+    supersetLabel: {
+      fontFamily: fonts.medium,
+      fontSize: 16,
+      marginBottom: 5,
+    },
+    inputContainerWithSuperset: {
+      marginBottom: 10,
     },
   });
 
@@ -422,6 +460,10 @@ const ExerciceDetail = () => {
 
     const hasDegressifs =
       degressifs && degressifs.length > 0 && degressifs[index];
+
+    const supersetsForThisSet = localSupersets.filter(
+      (superset) => superset.superset_sets === serie.numero_serie
+    );
 
     return (
       <View key={serie.serie_id} style={styles.exerciceDetailsValue}>
@@ -446,7 +488,8 @@ const ExerciceDetail = () => {
           <View
             style={[
               styles.inputContainer,
-              exercice.degressif_active && styles.inputContainerMargin,
+              (exercice.degressif_active || supersetsForThisSet.length > 0) &&
+                styles.inputContainerMargin,
               isActive && styles.inputContainerActive,
             ]}
           >
@@ -496,6 +539,37 @@ const ExerciceDetail = () => {
               </View>
             </View>
           )}
+
+          {supersetsForThisSet.map((superset, supersetIndex) => (
+            <View
+              key={superset.superset_id}
+              style={[
+                styles.inputContainerDegressif,
+                isActive && styles.inputContainerActive,
+                supersetIndex < supersetsForThisSet.length - 1 && {
+                  marginBottom: 20,
+                }, // Ajoute la marge sauf pour le dernier
+              ]}
+            >
+              <Text style={[styles.supersetLabel, { color: textColor }]}>
+                {superset.superset_nom}
+              </Text>
+              <TextInput
+                style={[styles.input, { color: textColor }]}
+                value={formatPoids(superset.superset_poids)}
+                onChangeText={(value) =>
+                  handleSupersetPoidsChange(superset.superset_id, value)
+                }
+                keyboardType="numeric"
+                placeholder="0"
+                placeholderTextColor={colors.placeholder}
+                keyboardAppearance="dark"
+                selectionColor={"#FF6B4A"}
+                editable={!checkedSets[index]}
+              />
+              <Text style={[styles.unit, { color: unitColor }]}>kg</Text>
+            </View>
+          ))}
         </View>
 
         <View style={styles.test}>
@@ -509,7 +583,8 @@ const ExerciceDetail = () => {
           <View
             style={[
               styles.inputContainer,
-              exercice.degressif_active && styles.inputContainerMargin,
+              (exercice.degressif_active || supersetsForThisSet.length > 0) &&
+                styles.inputContainerMargin,
               isActive && styles.inputContainerActive,
             ]}
           >
@@ -537,7 +612,9 @@ const ExerciceDetail = () => {
             // >
             <View
               style={[
-                styles.inputContainerDegressif,
+                styles.inputContainer,
+                (exercice.degressif_active || hasSuperset) &&
+                  styles.inputContainerMargin,
                 isActive && styles.inputContainerActive,
               ]}
             >
@@ -558,6 +635,34 @@ const ExerciceDetail = () => {
               <Text style={[styles.unit, { color: unitColor }]}>reps</Text>
             </View>
           )}
+
+          {supersetsForThisSet.map((superset, supersetIndex) => (
+            <View
+              key={superset.superset_id}
+              style={[
+                styles.inputContainerDegressif,
+                isActive && styles.inputContainerActive,
+                supersetIndex < supersetsForThisSet.length - 1 && {
+                  marginBottom: 20,
+                },
+              ]}
+            >
+              <TextInput
+                style={[styles.input, { color: textColor }]}
+                value={String(superset.superset_reps || "")}
+                onChangeText={(value) =>
+                  handleSupersetRepsChange(superset.superset_id, value)
+                }
+                keyboardType="numeric"
+                placeholder="0"
+                placeholderTextColor={colors.placeholder}
+                keyboardAppearance="dark"
+                selectionColor={"#FF6B4A"}
+                editable={!checkedSets[index]}
+              />
+              <Text style={[styles.unit, { color: unitColor }]}>reps</Text>
+            </View>
+          ))}
         </View>
 
         {/* Checkbox */}
