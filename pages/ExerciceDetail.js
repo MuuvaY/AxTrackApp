@@ -330,12 +330,7 @@ const ExerciceDetail = () => {
       marginVertical: 20,
       marginLeft: 20,
     },
-    exerciceDetailsValue: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 20,
-      marginBottom: 20,
-    },
+
     exerciceContainer: {
       alignContent: "center",
       justifyContent: "center",
@@ -434,10 +429,6 @@ const ExerciceDetail = () => {
       alignItems: "flex-start",
       gap: 20,
       marginBottom: 20,
-
-      // height: "100%",
-      // marginBottom: 30,
-      // position: "relative",
     },
     test: {
       height: "100%",
@@ -612,9 +603,7 @@ const ExerciceDetail = () => {
             // >
             <View
               style={[
-                styles.inputContainer,
-                (exercice.degressif_active || hasSuperset) &&
-                  styles.inputContainerMargin,
+                styles.inputContainerDegressif,
                 isActive && styles.inputContainerActive,
               ]}
             >

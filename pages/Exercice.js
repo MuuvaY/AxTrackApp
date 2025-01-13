@@ -47,10 +47,13 @@ const Exercice = () => {
           text: "Terminer",
           onPress: () => {
             setSessionActive(false);
-            clearInterval(intervalId);
-            const id = setInterval(startTimer, 1000);
-            navigation.navigate("FinSeance");
-            setIntervalId(id);
+            clearInterval(intervalId.current);
+            intervalId.current = setInterval(startTimer, 1000);
+            navigation.navigate("FinSeance", {
+              seanceNom: route.params?.seanceNom,
+              seanceId: seanceId,
+              timer: timer,
+            });
           },
         },
       ]);

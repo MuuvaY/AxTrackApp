@@ -131,6 +131,30 @@ const AppNavigator = () => {
                 fontFamily: fonts.semiBold,
                 color: colors.primary,
               },
+              headerRight: () => (
+                <>
+                  <TouchableOpacity
+                    onPress={() => setIsModalVisible(true)}
+                    style={styles.headerRightButton}
+                  >
+                    <icons.Ellipsis
+                      width={24}
+                      height={24}
+                      color={colors.background}
+                    />
+                  </TouchableOpacity>
+                  <OptionsModal
+                    visible={isModalVisible}
+                    onClose={() => setIsModalVisible(false)}
+                    onEdit={() => handleEdit(route.params, navigation)}
+                    onDelete={() =>
+                      handleDelete(route.params.seanceId, navigation)
+                    }
+                    colors={colors}
+                    fonts={fonts}
+                  />
+                </>
+              ),
             }}
           />
           <Stack.Screen
@@ -151,10 +175,22 @@ const AppNavigator = () => {
           <Stack.Screen
             name="FinSeance"
             component={FinSeance}
-            options={{
+            options={({ route }) => ({
+              title: route.params?.seanceNom || "Exercice",
+              headerTintColor: colors.placeholder,
+              headerTitleStyle: {
+                fontSize: 30,
+                fontFamily: fonts.semiBold,
+                color: colors.primary,
+              },
+              headerStyle: {
+                backgroundColor: colors.background,
+                elevation: 0,
+                shadowOpacity: 0,
+              },
               headerBackTitle: "",
               headerBackTitleVisible: false,
-            }}
+            })}
           />
         </>
       ) : (
