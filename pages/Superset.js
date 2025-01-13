@@ -28,7 +28,15 @@ const Superset = () => {
   const [exercises, setExercises] = useState([]);
 
   const addExercise = () => {
-    setExercises([...exercises, { name: "", sets: "", poids: "", reps: "" }]);
+    setExercises([
+      ...exercises,
+      {
+        superset_nom: "",
+        superset_sets: "",
+        superset_poids: "",
+        superset_reps: "",
+      },
+    ]);
   };
 
   const updateExercise = (index, field, value) => {
@@ -39,30 +47,30 @@ const Superset = () => {
 
   const onSave = route.params?.onSave;
 
+  const validateExercises = () => {
+    return exercises.every(
+      (exercise) =>
+        exercise.superset_nom?.trim() &&
+        exercise.superset_poids &&
+        exercise.superset_reps
+    );
+  };
+
   const saveExercises = useCallback(() => {
     if (!validateExercises()) {
       Alert.alert(
         "Erreur",
-        "Veuillez remplir tous les champs pour chaque exercice"
+        "Veuillez remplir tous les champs pour chaque superset"
       );
       return;
     }
 
     if (onSave) {
       onSave(exercises);
+      Alert.alert("Succès", "Les supersets ont été enregistrés");
     }
     navigation.goBack();
-  }, [onSave, exercises, navigation]);
-
-  const validateExercises = () => {
-    for (let exercise of exercises) {
-      const { name, sets, poids, reps } = exercise;
-      if (!name?.trim() || !sets || !poids || !reps) {
-        return false;
-      }
-    }
-    return true;
-  };
+  }, [exercises, onSave, navigation]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -194,7 +202,7 @@ const Superset = () => {
             />
           </View>
         </View>
-        {/* Afficher les supersets ajoutés */}
+
         {exercises.map((exercise, index) => (
           <View key={index} style={styles.containerInput}>
             <View style={styles.labelContainer}>
@@ -210,8 +218,10 @@ const Superset = () => {
                 placeholderTextColor={colors.placeholder}
                 keyboardAppearance="dark"
                 selectionColor={colors.secondary}
-                value={exercise.name}
-                onChangeText={(text) => updateExercise(index, "name", text)}
+                value={exercise.superset_nom}
+                onChangeText={(text) =>
+                  updateExercise(index, "superset_nom", text)
+                }
               />
             </View>
 
@@ -224,9 +234,9 @@ const Superset = () => {
                 placeholderTextColor={colors.placeholder}
                 keyboardAppearance="dark"
                 selectionColor={colors.secondary}
-                value={String(exercise.sets)}
+                value={String(exercise.superset_sets)}
                 onChangeText={(text) =>
-                  updateExercise(index, "sets", parseInt(text) || 0)
+                  updateExercise(index, "superset_sets", text)
                 }
               />
             </View>
@@ -240,9 +250,9 @@ const Superset = () => {
                 placeholderTextColor={colors.placeholder}
                 keyboardAppearance="dark"
                 selectionColor={colors.secondary}
-                value={String(exercise.poids)}
+                value={String(exercise.superset_poids)}
                 onChangeText={(text) =>
-                  updateExercise(index, "poids", parseInt(text) || 0)
+                  updateExercise(index, "superset_poids", text)
                 }
               />
             </View>
@@ -256,9 +266,9 @@ const Superset = () => {
                 placeholderTextColor={colors.placeholder}
                 keyboardAppearance="dark"
                 selectionColor={colors.secondary}
-                value={String(exercise.reps)}
+                value={String(exercise.superset_reps)}
                 onChangeText={(text) =>
-                  updateExercise(index, "reps", parseInt(text) || 0)
+                  updateExercise(index, "superset_reps", text)
                 }
               />
             </View>

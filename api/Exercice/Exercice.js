@@ -13,47 +13,31 @@ export const getExercices = async (seanceId) => {
   }
 };
 
-export const createExercice = async (
-  seanceId,
-  nomExercice,
-  sets,
-  poids,
-  repetitions,
-  degressifActive,
-  seriesDegressif,
-  poidsDegressif,
-  repetitions_degressif,
-  requires_assise,
-  requires_poulie,
-  requires_banc,
-  requires_dossier,
-  requires_thoracique,
-  reglage_prise,
-  supersets
-) => {
-  const exerciceData = {
-    nom_exercice: nomExercice,
-    sets: sets,
-    poids: poids,
-    repetitions: repetitions,
-    degressif_active: degressifActive,
-    supersets: supersets || null,
-    series_degressif: degressifActive ? seriesDegressif : null,
-    poids_degressif: degressifActive ? poidsDegressif : null,
-    repetitions_degressif: degressifActive ? repetitions_degressif : null,
-    reglage_assise: requires_assise,
-    reglage_poulie: requires_poulie,
-    reglage_banc: requires_banc,
-    reglage_dossier: requires_dossier,
-    reglage_thoracique: requires_thoracique,
-    reglage_prise: reglage_prise,
-  };
-  console.log("Données envoyées à l'API:", exerciceData);
+export const createExercice = async (seanceId, exerciceData) => {
   try {
-    const response = await ApiManager.post(
-      `/seances/${seanceId}/exercices`,
-      exerciceData
-    );
+    const response = await ApiManager.post(`/seances/${seanceId}/exercices`, {
+      nom_exercice: exerciceData.nomExercice,
+      sets: exerciceData.sets,
+      poids: exerciceData.poids,
+      repetitions: exerciceData.repetitions,
+      degressif_active: exerciceData.degressifActive,
+      series_degressif: exerciceData.degressifActive
+        ? exerciceData.seriesDegressif
+        : null,
+      poids_degressif: exerciceData.degressifActive
+        ? exerciceData.poidsDegressif
+        : null,
+      repetitions_degressif: exerciceData.degressifActive
+        ? exerciceData.repetitions_degressif
+        : null,
+      reglage_assise: exerciceData.requires_assise,
+      reglage_poulie: exerciceData.requires_poulie,
+      reglage_banc: exerciceData.requires_banc,
+      reglage_dossier: exerciceData.requires_dossier,
+      reglage_thoracique: exerciceData.requires_thoracique,
+      reglage_prise: exerciceData.reglage_prise,
+      supersets: exerciceData.supersets,
+    });
     return response.data;
   } catch (error) {
     console.error(

@@ -55,7 +55,6 @@ const CreationExercice = () => {
   const [supersetData, setSupersetData] = useState(null);
 
   const formatWeight = (value) => {
-    // Si la valeur est un entier, on ne garde pas les décimales
     if (value) {
       let number = parseFloat(value);
       return number % 1 === 0 ? number.toString() : number.toFixed(2);
@@ -90,78 +89,17 @@ const CreationExercice = () => {
 
   const handleSupersetData = useCallback((data) => {
     setSupersetData(data);
-    Alert.alert("Superset", "Les données du superset ont été enregistrées !");
   }, []);
 
-  // const handleSaveExercice = async () => {
-  //   try {
-  //     if (!exercise || !sets || !weight || !reps) {
-  //       Alert.alert("Erreur", "Veuillez remplir tous les champs");
-  //       return;
-  //     }
-
-  //     const exercice = await createExercice(
-  //       seanceId,
-  //       exercise,
-  //       parseInt(sets),
-  //       parseFloat(weight),
-  //       parseInt(reps),
-  //       isDegressive
-  //     );
-
-  //     console.log("Exercice créé avec succès:", exercice);
-  //     navigation.goBack();
-  //   } catch (error) {
-  //     Alert.alert(
-  //       "Erreur",
-  //       "Une erreur est survenue lors de la création de l'exercice"
-  //     );
-  //     console.error(error);
-  //   }
-  // };
-
-  // const handleSaveExercice = async () => {
-  //   try {
-  //     // Vérifier si tous les champs requis sont remplis
-  //     if (!exercise || !sets || !weight || !reps) {
-  //       Alert.alert("Erreur", "Veuillez remplir tous les champs");
-  //       return;
-  //     }
-
-  //     // Vérifier si le mode dégressif est activé et les valeurs dégressives sont présentes
-  //     if (isDegressive && (!degressiveWeight || !degressiveReps || !sets)) {
-  //       Alert.alert("Erreur", "Veuillez remplir tous les champs dégressifs");
-  //       return;
-  //     }
-
-  //     // Créer l'exercice
-  //     const exercice = await createExercice(
-  //       seanceId,
-  //       exercise,
-  //       parseInt(sets),
-  //       parseFloat(weight),
-  //       parseInt(reps),
-  //       isDegressive,
-  //       isDegressive ? parseInt(sets) : null,
-  //       isDegressive ? parseFloat(degressiveWeight) : null,
-  //       isDegressive ? parseInt(degressiveReps) : null,
-  //       requiresPoulie,
-  //       requiresBanc,
-  //       requiresDossier,
-  //       requiresThoracique,
-  //       requiresAssise
-  //     );
-
-  //     console.log("Exercice créé avec succès:", exercice);
-  //     navigation.goBack();
-  //   } catch (error) {
-  //     Alert.alert(
-  //       "Erreur",
-  //       "Une erreur est survenue lors de la création de l'exercice"
-  //     );
-  //     console.error(error);
-  //   }
-  // };
+  const navigateToSuperset = () => {
+    navigation.navigate("Superset", {
+      exerciceName: exercise,
+      sets: sets,
+      poids: weight,
+      reps: reps,
+      onSave: handleSupersetData,
+    });
+  };
 
   const handleSaveExercice = async () => {
     if (!validateFields()) return;
@@ -182,84 +120,27 @@ const CreationExercice = () => {
         requires_dossier: requiresDossier,
         requires_thoracique: requiresThoracique,
         reglage_prise: requiresPrise,
-        superset: supersetData,
+
+        supersets: supersetData
+          ? supersetData.map((superset) => ({
+              ...superset,
+              superset_sets: parseInt(sets),
+            }))
+          : [],
       };
 
-      // Créer l'exercice
-      const exercice = await createExercice(
-        seanceId,
-        exerciceData.nomExercice,
-        exerciceData.sets,
-        exerciceData.poids,
-        exerciceData.repetitions,
-        exerciceData.degressifActive,
-        exerciceData.seriesDegressif,
-        exerciceData.poidsDegressif,
-        exerciceData.repetitions_degressif,
-        exerciceData.requires_assise,
-        exerciceData.requires_poulie,
-        exerciceData.requires_banc,
-        exerciceData.requires_dossier,
-        exerciceData.requires_thoracique,
-        exerciceData.reglage_prise,
-        exerciceData.superset
-      );
-
+      console.log("Données envoyées:", exerciceData);
+      const exercice = await createExercice(seanceId, exerciceData);
       console.log("Exercice créé avec succès:", exercice);
       navigation.goBack();
     } catch (error) {
-      console.error(
-        "Erreur lors de la création de l'exercice:",
-        error.response?.data || error.message
-      );
+      console.error("Erreur lors de la création de l'exercice:", error);
       Alert.alert(
         "Erreur",
         "Une erreur est survenue lors de la création de l'exercice."
       );
     }
   };
-
-  // const handleSaveExercice = async () => {
-  //   if (!validateFields()) return;
-  //   try {
-  //     if (!exercise || !sets || !weight || !reps) {
-  //       Alert.alert("Erreur", "Veuillez remplir tous les champs");
-  //       return;
-  //     }
-
-  //     if (isDegressive && (!degressiveWeight || !degressiveReps || !sets)) {
-  //       Alert.alert("Erreur", "Veuillez remplir tous les champs dégressifs");
-  //       return;
-  //     }
-
-  //     const exercice = await createExercice(
-  //       seanceId,
-  //       exercise,
-  //       parseInt(sets),
-  //       parseFloat(weight),
-  //       parseInt(reps),
-  //       isDegressive,
-  //       isDegressive ? parseInt(sets) : null,
-  //       isDegressive ? parseFloat(degressiveWeight) : null,
-  //       isDegressive ? parseInt(degressiveReps) : null,
-  //       requiresPoulie,
-  //       requiresBanc,
-  //       requiresDossier,
-  //       requiresThoracique,
-  //       requiresAssise,
-  //       requiresPrise
-  //     );
-
-  //     console.log("Exercice créé avec succès:", exercice);
-  //     navigation.goBack();
-  //   } catch (error) {
-  //     Alert.alert(
-  //       "Erreur",
-  //       "Une erreur est survenue lors de la création de l'exercice"
-  //     );
-  //     console.error(error);
-  //   }
-  // };
 
   const styles = StyleSheet.create({
     container: {
@@ -696,15 +577,7 @@ const CreationExercice = () => {
             </View>
             <View style={styles.navigation}>
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("Superset", {
-                    exerciceName: exercise,
-                    sets: sets,
-                    poids: weight,
-                    reps: reps,
-                    onSave: handleSupersetData,
-                  })
-                }
+                onPress={navigateToSuperset}
                 // disabled={!exercise?.trim() || !sets || !weight || !reps}
                 style={styles.containerNavigation}
               >
