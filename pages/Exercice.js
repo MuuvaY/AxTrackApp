@@ -14,6 +14,7 @@ import { useRoute } from "@react-navigation/native/src";
 
 import { useTheme } from "../context/ThemeContext";
 import { getExercices } from "../api/Exercice/Exercice";
+import { getDegressifs } from "../api/Exercice/Degressif";
 import { icons } from "./../assets/icons/icons";
 import { useChronometre } from "../context/ChronometreContext";
 
@@ -25,6 +26,7 @@ const Exercice = () => {
 
   const seanceId = route.params?.seanceId;
   const [exercices, setExercices] = useState([]);
+  const [degressifs, setDegressifs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [sessionActive, setSessionActive] = useState(false);
   // const [timer, setTimer] = useState(0);
@@ -57,32 +59,73 @@ const Exercice = () => {
 
   useEffect(() => {
     if (sessionActive) {
-      // Démarrer un nouvel intervalle si la session est active
       intervalId.current = setInterval(() => {
         startTimer();
       }, 1000);
     } else {
-      clearInterval(intervalId.current); // Arrêter l'intervalle quand la session est terminée
+      clearInterval(intervalId.current);
     }
 
     return () => {
-      clearInterval(intervalId.current); // Nettoyage lors du démontage du composant
+      clearInterval(intervalId.current);
     };
   }, [sessionActive, startTimer]);
 
-  const fetchExercices = async () => {
+  // const fetchExercices = async () => {
+  //   if (!seanceId) return;
+  //   try {
+  //     const data = await getExercices(seanceId);
+  //     setExercices(data);
+  //   } catch (err) {
+  //     Alert.alert("Erreur", "Impossible de récupérer les exercices.");
+  //   }
+  // };
+
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     fetchExercices();
+  //   }, [seanceId])
+  // );
+  const fetchData = async () => {
     if (!seanceId) return;
     try {
-      const data = await getExercices(seanceId);
-      setExercices(data);
+      const exercicesData = await getExercices(seanceId);
+      setExercices(exercicesData);
+
+      const degressifsData = await Promise.all(
+        exercicesData.map(async (exercice) => {
+          try {
+            const exerciceId = exercice.exercice_id;
+            const degressifsForExercice = await getDegressifs(exerciceId);
+
+            return {
+              exerciceId: exerciceId,
+              degressifs: degressifsForExercice.map((deg) => ({
+                poids_degressifs: deg.poids_degressif,
+                reps_degressifs: deg.repetitions_degressif,
+                degressif_id: deg.degressif_id,
+              })),
+            };
+          } catch (error) {
+            console.error(`Erreur pour l'exercice ${exerciceId}:`, error);
+            return {
+              exerciceId: exercice.exercice_id,
+              degressifs: [],
+            };
+          }
+        })
+      );
+
+      setDegressifs(degressifsData);
     } catch (err) {
-      Alert.alert("Erreur", "Impossible de récupérer les exercices.");
+      console.error("Erreur complète:", err);
+      Alert.alert("Erreur", "Impossible de récupérer les données.");
     }
   };
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchExercices();
+      fetchData();
     }, [seanceId])
   );
 
@@ -126,7 +169,6 @@ const Exercice = () => {
       fontSize: 28,
     },
     exerciceListContainer: {
-      // Nouveau conteneur pour la liste d'exercices
       paddingTop: 10,
       alignItems: "center",
     },
@@ -207,9 +249,17 @@ const Exercice = () => {
                 <TouchableOpacity
                   key={exercice.id || index}
                   style={styles.exercice}
-                  onPress={() =>
-                    navigation.navigate("ExerciceDetail", { exercice, timer })
-                  }
+                  onPress={() => {
+                    const exerciceDegressifs =
+                      degressifs.find(
+                        (d) => d.exerciceId === exercice.exercice_id
+                      )?.degressifs || [];
+                    navigation.navigate("ExerciceDetail", {
+                      exercice,
+                      timer,
+                      degressifs: exerciceDegressifs,
+                    });
+                  }}
                 >
                   <Text style={styles.exerciceText}>
                     {exercice.nom_exercice}

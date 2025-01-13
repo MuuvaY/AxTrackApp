@@ -13,7 +13,7 @@ export const retrieveToken = async () => {
   try {
     const token = await SecureStore.getItemAsync("authToken");
     if (token) {
-      console.log("Token récupéré avec succès !", token);
+      // console.log("Token récupéré avec succès !", token);
     } else {
       console.log("Aucun token trouvé");
     }

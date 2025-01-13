@@ -63,3 +63,22 @@ export const createExercice = async (
     throw error;
   }
 };
+
+export const updateExercice = async (seanceId, exerciceId, exerciceData) => {
+  try {
+    console.log(`URL: /seances/${seanceId}/exercices/${exerciceId}`);
+    console.log("Données envoyées2:", exerciceData);
+
+    const response = await ApiManager.patch(
+      `/seances/${seanceId}/exercices/${exerciceId}`,
+      exerciceData
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la mise à jour de l'exercice:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};

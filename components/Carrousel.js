@@ -478,7 +478,6 @@ const HeaderCarousel = ({ exercice, formattedDate, timer, theme }) => {
           { label: "Réglage prise", value: exercice?.reglage_prise || "N/A" },
         ];
 
-        // Filtrer les réglages disponibles
         const reglagesDisponibles = reglages.filter((r) => r.value !== "N/A");
 
         if (reglagesDisponibles.length === 0) {
@@ -530,29 +529,68 @@ const HeaderCarousel = ({ exercice, formattedDate, timer, theme }) => {
     //   flexDirection: "row",
     //   flexWrap: "wrap",
     //   justifyContent: "space-between",
-    //   paddingHorizontal: 35, // Ajout de padding horizontal
+    //   paddingHorizontal: 35,
     //   width: "100%",
     //   // marginTop: 20,
     //   // flex: 1,
     // },
     // headerItem: {
-    //   width: "48%", // Légèrement réduit pour assurer l'espace entre les colonnes
+    //   width: "48%",
     //   marginBottom: 20,
+    // },
+    // headerInfoGrid: {
+    //   flexDirection: "row",
+    //   flexWrap: "wrap",
+    //   alignItems: "center",
+    //   justifyContent: "center",
+    //   width: "100%",
+    //   paddingHorizontal: 20,
+    //   marginTop: 20,
+    // },
+
+    // headerGridItem: {
+    //   width: "45%",
+    //   marginBottom: 15,
+    //   // alignItems: "center",
     // },
     headerInfoGrid: {
       flexDirection: "row",
-      flexWrap: "wrap", // Permet de faire passer les éléments à la ligne
-      alignItems: "center", // Centre les lignes verticalement
-      justifyContent: "center", // Centre les colonnes horizontalement
+      justifyContent: "space-between",
       width: "100%",
-      paddingHorizontal: 20, // Ajout d'espacement sur les côtés
+      paddingHorizontal: 35,
       marginTop: 20,
     },
 
     headerGridItem: {
-      width: "45%", // Légèrement réduit pour laisser un espace entre les colonnes
-      marginBottom: 15, // Ajout d'espace entre les lignes
-      // alignItems: "center", // Centre le contenu de chaque élément horizontalement
+      width: "auto",
+      marginBottom: 15,
+      alignItems: "flex-start",
+    },
+
+    headerGridItemRight: {
+      alignItems: "flex-start",
+    },
+
+    headerLabel: {
+      color: colors.background,
+      fontFamily: fonts.bold,
+      fontSize: 20,
+      textAlign: "left",
+    },
+
+    headerValue: {
+      color: colors.background,
+      fontFamily: fonts.medium,
+      fontSize: 20,
+      textAlign: "left",
+    },
+
+    headerLabelRight: {
+      textAlign: "right",
+    },
+
+    headerValueRight: {
+      textAlign: "right",
     },
     paginationContainer: {
       flexDirection: "row",
@@ -609,12 +647,33 @@ const HeaderCarousel = ({ exercice, formattedDate, timer, theme }) => {
 
         {isSecondPage ? (
           <View style={styles.headerInfoGrid}>
-            {page.content.map((item, idx) => (
-              <View key={idx} style={styles.headerGridItem}>
-                <Text style={styles.headerLabel}>{item.label}</Text>
-                <Text style={styles.headerValue}>{item.value}</Text>
-              </View>
-            ))}
+            <View>
+              {page.content
+                .slice(0, Math.ceil(page.content.length / 2))
+                .map((item, idx) => (
+                  <View key={idx} style={styles.headerGridItem}>
+                    <Text style={styles.headerLabel}>{item.label}</Text>
+                    <Text style={styles.headerValue}>{item.value}</Text>
+                  </View>
+                ))}
+            </View>
+            <View>
+              {page.content
+                .slice(Math.ceil(page.content.length / 2))
+                .map((item, idx) => (
+                  <View
+                    key={idx}
+                    style={[styles.headerGridItem, styles.headerGridItemRight]}
+                  >
+                    <Text style={[styles.headerLabel, styles.headerLabelRight]}>
+                      {item.label}
+                    </Text>
+                    <Text style={[styles.headerValue, styles.headerValueRight]}>
+                      {item.value}
+                    </Text>
+                  </View>
+                ))}
+            </View>
           </View>
         ) : (
           <View style={styles.headerInfo}>
