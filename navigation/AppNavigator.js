@@ -4,20 +4,25 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import HomeTabs from "./HomeTabs";
+import { icons } from "./../assets/icons/icons";
+
+import { UseSeanceActions } from "../components/UseSeanceActions";
+import OptionsModal from "../components/OptionsModal";
+
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Profile from "../pages/Profile";
 import CreationSeance from "../pages/CreationSeance";
+import CreationExercice from "../pages/CreationExercice";
 import Exercice from "../pages/Exercice";
 import Superset from "../pages/Superset";
-import CreationExercice from "../pages/CreationExercice";
-import OptionsModal from "../components/OptionsModal";
-import { UseSeanceActions } from "../components/UseSeanceActions";
-import DonnerPerso from "../pages/DonnerPerso";
-import { icons } from "./../assets/icons/icons";
-
+import DonneePerso from "../pages/DonneePerso";
 import FinSeance from "../pages/FinSeance";
 import ExerciceDetail from "../pages/ExerciceDetail";
+import EmailModification from "../pages/EmailModification";
+import ResetMdp from "../pages/ResetMdp";
+import Contact from "../pages/Contact";
+import SuppCompte from "../pages/SuppCompte";
 
 const Stack = createStackNavigator();
 
@@ -103,14 +108,7 @@ const AppNavigator = () => {
             component={CreationExercice}
             options={{ headerShown: false, headerBackTitleVisible: false }}
           />
-          <Stack.Screen
-            name="DonnerPerso"
-            component={DonnerPerso}
-            options={{
-              headerBackTitle: "",
-              headerBackTitleVisible: false,
-            }}
-          />
+
           <Stack.Screen
             name="ExerciceDetail"
             component={ExerciceDetail}
@@ -191,6 +189,109 @@ const AppNavigator = () => {
               headerBackTitle: "",
               headerBackTitleVisible: false,
             })}
+          />
+          <Stack.Screen
+            name="DonneePerso"
+            component={DonneePerso}
+            options={{
+              title: "Données personnelles",
+              headerTitleStyle: {
+                fontSize: 30,
+                fontFamily: fonts.semiBold,
+                color: colors.primary,
+              },
+              headerStyle: {
+                backgroundColor: colors.background,
+                elevation: 0,
+                shadowOpacity: 0,
+              },
+              headerTintColor: colors.placeholder,
+              headerBackTitle: "",
+              headerBackTitleVisible: false,
+            }}
+          />
+
+          <Stack.Screen
+            name="EmailModification"
+            component={EmailModification}
+            options={{
+              title: "Modifier votre email",
+              headerTitleStyle: {
+                fontSize: 30,
+                fontFamily: fonts.semiBold,
+                color: colors.primary,
+              },
+              headerStyle: {
+                backgroundColor: colors.background,
+                elevation: 0,
+                shadowOpacity: 0,
+              },
+              headerTintColor: colors.placeholder,
+              headerBackTitle: "",
+              headerBackTitleVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="ResetMdp"
+            component={ResetMdp}
+            options={{
+              title: "Modifier votre mot de passe",
+              headerTitleStyle: {
+                fontSize: 30,
+                fontFamily: fonts.semiBold,
+                color: colors.primary,
+              },
+              headerStyle: {
+                backgroundColor: colors.background,
+                elevation: 0,
+                shadowOpacity: 0,
+              },
+              headerTintColor: colors.placeholder,
+              headerBackTitle: "",
+              headerBackTitleVisible: false,
+            }}
+          />
+
+          <Stack.Screen
+            name="Contact"
+            component={Contact}
+            options={{
+              title: "Nous contacter",
+              headerTitleStyle: {
+                fontSize: 30,
+                fontFamily: fonts.semiBold,
+                color: colors.primary,
+              },
+              headerStyle: {
+                backgroundColor: colors.background,
+                elevation: 0,
+                shadowOpacity: 0,
+              },
+              headerTintColor: colors.placeholder,
+              headerBackTitle: "",
+              headerBackTitleVisible: false,
+            }}
+          />
+
+          <Stack.Screen
+            name="SuppCompte"
+            component={SuppCompte}
+            options={{
+              title: "Supprimer le compte",
+              headerTitleStyle: {
+                fontSize: 30,
+                fontFamily: fonts.semiBold,
+                color: colors.primary,
+              },
+              headerStyle: {
+                backgroundColor: colors.background,
+                elevation: 0,
+                shadowOpacity: 0,
+              },
+              headerTintColor: colors.placeholder,
+              headerBackTitle: "",
+              headerBackTitleVisible: false,
+            }}
           />
         </>
       ) : (

@@ -54,6 +54,7 @@ const Exercice = () => {
               seanceId: seanceId,
               timer: timer,
             });
+            resetTimer();
           },
         },
       ]);

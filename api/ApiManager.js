@@ -21,23 +21,40 @@ export const setupInterceptor = (onLogout) => {
     }
   );
 
+  // ApiManager.interceptors.response.use(
+  //   (response) => {
+  //     return response;
+  //   },
+  //   async (error) => {
+  //     if (error.response && error.response.status === 401) {
+  //       console.log("Token expiré ou invalide. Déconnexion en cours...");
+
+  //       await removeToken();
+
+  //       if (onLogout) {
+  //         onLogout();
+  //       }
+
+  //       console.log("Déconnexion réussie.");
+  //     }
+
+  //     return Promise.reject(error);
+  //   }
+  // );
   ApiManager.interceptors.response.use(
-    (response) => {
-      return response;
-    },
+    (response) => response,
     async (error) => {
-      if (error.response && error.response.status === 401) {
+      if (
+        error.response?.status === 401 ||
+        error.response?.status === 403 ||
+        error.response?.data?.message === "TokenExpiredError"
+      ) {
         console.log("Token expiré ou invalide. Déconnexion en cours...");
-
         await removeToken();
-
         if (onLogout) {
           onLogout();
         }
-
-        console.log("Déconnexion réussie.");
       }
-
       return Promise.reject(error);
     }
   );
