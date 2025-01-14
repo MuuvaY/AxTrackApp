@@ -1,17 +1,20 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   Alert,
   ScrollView,
-  Image,
+  Pressable,
 } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { getExercices } from "../api/Exercice/Exercice";
+import {
+  createFinSeance,
+  getFinSeanceBySeanceId,
+} from "../api/Seance/FinSeance";
 
 const FinSeance = () => {
   const theme = useTheme();
@@ -23,8 +26,44 @@ const FinSeance = () => {
   const [totalVolume, setTotalVolume] = useState(0);
   const [totalWeight, setTotalWeight] = useState(0);
   const [duration, setDuration] = useState("");
+  const [difficulty, setDifficulty] = useState("-");
+  const [currentDate, setCurrentDate] = useState(
+    new Date().toLocaleDateString()
+  );
 
-  const saveExercises = useCallback(() => {}, []);
+  const difficultyLevels = [
+    { id: 1, name: "Facile" },
+    { id: 2, name: "Moyen" },
+    { id: 3, name: "Difficile" },
+  ];
+
+  const saveExercises = useCallback(async () => {
+    if (difficulty === "-") {
+      Alert.alert(
+        "Attention",
+        "Veuillez sélectionner un niveau de difficulté avant de valider"
+      );
+      return;
+    }
+
+    try {
+      await createFinSeance(
+        route.params?.seanceId,
+        duration,
+        totalWeight,
+        totalVolume,
+        new Date().toISOString(),
+        difficulty
+      );
+      navigation.navigate("Accueil");
+    } catch (error) {
+      console.error("Erreur lors de la sauvegarde:", error);
+      Alert.alert(
+        "Erreur",
+        "Une erreur est survenue lors de la sauvegarde de la séance"
+      );
+    }
+  }, [route.params?.seanceId, duration, totalWeight, totalVolume, difficulty]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -34,7 +73,7 @@ const FinSeance = () => {
         </TouchableOpacity>
       ),
     });
-  }, [navigation, colors.primary, fonts.medium]);
+  }, [navigation, colors.primary, fonts.medium, saveExercises]);
 
   const formatDuration = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -87,7 +126,7 @@ const FinSeance = () => {
       fontFamily: fonts.medium,
     },
     headerTitle: {
-      color: colors.text,
+      color: colors.placeholder,
       fontFamily: fonts.bold,
       fontSize: 30,
       marginTop: "10%",
@@ -147,14 +186,45 @@ const FinSeance = () => {
       alignItems: "center",
       justifyContent: "space-between",
     },
-    // statsPair: {
-    //   flexDirection: "row",
-    //   alignItems: "center",
-    //   gap: 15,
-    // },
+
     dateWrapper: {
       paddingHorizontal: "5%",
       marginTop: 20,
+    },
+    difficultyContainer: {
+      paddingHorizontal: "5%",
+      marginTop: 20,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    buttonCategoryContainer: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      marginBottom: 20,
+    },
+    categoryButton: {
+      borderRadius: 25,
+      paddingLeft: 15,
+      paddingRight: 15,
+      margin: 5,
+      justifyContent: "center",
+      alignItems: "center",
+      borderColor: colors.placeholder,
+      borderWidth: 2,
+    },
+    categoryButtonText: {
+      color: colors.placeholder,
+      fontFamily: fonts.medium,
+      fontSize: 28,
+    },
+    selectedCategoryButton: {
+      backgroundColor: "rgba(255, 52, 0, 0.5)",
+      color: colors.text,
+      borderColor: colors.secondary,
     },
   });
   return (
@@ -182,14 +252,37 @@ const FinSeance = () => {
       <View style={styles.statsContainer}>
         <View style={styles.statsPair}>
           <Text style={styles.infoLabel}>Date</Text>
-          <Text style={styles.infoData}>{duration}</Text>
+          <Text style={styles.infoData}>{currentDate}</Text>
         </View>
       </View>
       <View style={styles.separator} />
-      <View style={styles.statsContainer}>
-        <View style={styles.statsPair}>
+
+      <View style={styles.statsPair}>
+        <View style={styles.difficultyContainer}>
           <Text style={styles.infoLabel}>Difficulté</Text>
-          <Text style={styles.infoData}>-</Text>
+        </View>
+        <View style={styles.buttonCategoryContainer}>
+          {difficultyLevels.map((level) => (
+            <Pressable
+              key={level.id}
+              style={[
+                styles.categoryButton,
+                difficulty === level.name && styles.selectedCategoryButton,
+              ]}
+              onPress={() => setDifficulty(level.name)}
+            >
+              <Text
+                style={[
+                  styles.categoryButtonText,
+                  difficulty === level.name && {
+                    color: colors.text,
+                  },
+                ]}
+              >
+                {level.name}
+              </Text>
+            </Pressable>
+          ))}
         </View>
       </View>
     </View>
