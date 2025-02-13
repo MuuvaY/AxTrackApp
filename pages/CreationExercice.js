@@ -54,6 +54,14 @@ const CreationExercice = () => {
 
   const [supersetData, setSupersetData] = useState(null);
 
+  const [settingsValues, setSettingsValues] = useState({
+    poulie: 0,
+    banc: 0,
+    dossier: 0,
+    thoracique: 0,
+    assise: 0,
+  });
+
   const formatWeight = (value) => {
     if (value) {
       let number = parseFloat(value);
@@ -114,12 +122,31 @@ const CreationExercice = () => {
         seriesDegressif: isDegressive ? parseInt(sets) : null,
         poidsDegressif: isDegressive ? parseFloat(degressiveWeight) : null,
         repetitions_degressif: isDegressive ? parseInt(degressiveReps) : null,
+        // requires_assise: requiresAssise,
+        // requires_poulie: requiresPoulie,
+        // requires_banc: requiresBanc,
+        // requires_dossier: requiresDossier,
+        // requires_thoracique: requiresThoracique,
+        // reglage_prise: requiresPrise,
         requires_assise: requiresAssise,
+        reglage_assise_value: requiresAssise ? settingsValues.assise : null,
+
         requires_poulie: requiresPoulie,
+        reglage_poulie_value: requiresPoulie ? settingsValues.poulie : null,
+
         requires_banc: requiresBanc,
+        reglage_banc_value: requiresBanc ? settingsValues.banc : null,
+
         requires_dossier: requiresDossier,
+        reglage_dossier_value: requiresDossier ? settingsValues.dossier : null,
+
         requires_thoracique: requiresThoracique,
+        reglage_thoracique_value: requiresThoracique
+          ? settingsValues.thoracique
+          : null,
+
         reglage_prise: requiresPrise,
+        reglage_prise_value: requiresPrise ? requiresPrise : null,
 
         supersets: supersetData
           ? supersetData.map((superset) => ({
@@ -642,30 +669,45 @@ const CreationExercice = () => {
               label="Réglage Poulie"
               value={requiresPoulie}
               onValueChange={setRequiresPoulie}
+              onPickerValueChange={(value) =>
+                setSettingsValues((prev) => ({ ...prev, poulie: value }))
+              }
               IconComponent={icons.Settings}
             />
             <CustomSwitch
               label="Réglage Banc"
               value={requiresBanc}
               onValueChange={setRequiresBanc}
+              onPickerValueChange={(value) =>
+                setSettingsValues((prev) => ({ ...prev, banc: value }))
+              }
               IconComponent={icons.Settings}
             />
             <CustomSwitch
               label="Réglage Dossier"
               value={requiresDossier}
               onValueChange={setRequiresDossier}
+              onPickerValueChange={(value) =>
+                setSettingsValues((prev) => ({ ...prev, dossier: value }))
+              }
               IconComponent={icons.Settings}
             />
             <CustomSwitch
               label="Réglage Thoracique"
               value={requiresThoracique}
               onValueChange={setRequiresThoracique}
+              onPickerValueChange={(value) =>
+                setSettingsValues((prev) => ({ ...prev, thoracique: value }))
+              }
               IconComponent={icons.Settings}
             />
             <CustomSwitch
               label="Réglage Assise"
               value={requiresAssise}
               onValueChange={setRequiresAssise}
+              onPickerValueChange={(value) =>
+                setSettingsValues((prev) => ({ ...prev, assise: value }))
+              }
               IconComponent={icons.Settings}
             />
           </View>

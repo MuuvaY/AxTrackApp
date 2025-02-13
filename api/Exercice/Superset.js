@@ -19,3 +19,22 @@ export const getSupersets = async (supersetId, exerciceId) => {
     throw error;
   }
 };
+
+export const deleteSuperset = async (exerciceId, supersetId) => {
+  console.log("Tentative de suppression:", {
+    exerciceId,
+    supersetId,
+  });
+  try {
+    const response = await ApiManager.delete(
+      `/exercice/${exerciceId}/superset/${supersetId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la suppression:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};

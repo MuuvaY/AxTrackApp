@@ -52,3 +52,19 @@ export const createDegressif = async (
     throw error;
   }
 };
+
+export const deleteDegressif = async (exerciceId, degressifId) => {
+  console.log("Tentative de suppression:", { exerciceId, degressifId });
+  try {
+    const response = await ApiManager.delete(
+      `/exercice/${exerciceId}/degressifs/${degressifId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la suppression:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};

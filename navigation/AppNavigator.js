@@ -37,11 +37,7 @@ const AppNavigator = () => {
     return <Text>Loading...</Text>;
   }
 
-  const styles = StyleSheet.create({
-    headerRightButton: {
-      marginRight: 20,
-    },
-  });
+  const styles = StyleSheet.create({ headerRightButton: { marginRight: 20 } });
 
   return (
     <Stack.Navigator screenOptions={{ gestureEnabled: false }}>
